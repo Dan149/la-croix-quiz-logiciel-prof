@@ -1,0 +1,24 @@
+footer {
+  position: fixed;
+  bottom: -2rem;
+  right: 0;
+  animation: footerAnim 1s ease forwards;
+  width: 100vw;
+  height: 1.2rem;
+  background: rgb(200, 200, 200);
+  text-align: center;
+  span {
+    font-style: italic;
+    font-size: 0.8rem;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@keyframes footerAnim {
+  to {
+    bottom: 0;
+  }
+}

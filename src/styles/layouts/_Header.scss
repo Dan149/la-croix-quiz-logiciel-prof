@@ -1,0 +1,42 @@
+header {
+  position: absolute;
+  top: -15vh;
+  animation: headerAnim 1s ease forwards;
+  width: 100vw;
+  height: 10vh;
+  background: rgb(224, 224, 224);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .header-title {
+    h2 {
+      padding: 0 10px;
+      color: darkblue;
+      font-family: serif;
+      font-weight: 100;
+      display: inline-block;
+    }
+    h3 {
+      padding: 0 10px;
+      color: grey;
+      font-size: 1rem;
+      font-weight: 200;
+      font-style: italic;
+      display: inline-block;
+    }
+    .app-version {
+      font-size: 0.8rem;
+    }
+  }
+
+  img {
+    height: 100%;
+  }
+}
+
+@keyframes headerAnim {
+  to {
+    top: 0;
+  }
+}
