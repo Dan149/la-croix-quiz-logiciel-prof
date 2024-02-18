@@ -16,16 +16,33 @@
 @mixin BackButton {
   .back-btn {
     position: absolute;
-    top: 5%;
+    top: 12px;
     transition: 500ms ease;
-    transform: translateY(-20%);
     left: 10px;
     width: 2rem;
     border: 1px solid black;
     border-radius: 1000px;
     &:hover {
-      transform: translateY(-20%) rotate(-360deg);
+      transform: rotate(-360deg);
       background: rgb(255, 180, 180);
+    }
+  }
+}
+
+@mixin BasicComponentScrollbar {
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgb(165, 165, 165);
+    border-radius: 10px;
+    &:hover {
+      background: rgb(124, 124, 124);
     }
   }
 }

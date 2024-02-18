@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, session } from "electron";
 import path from "node:path";
+const { dialog } = require("electron");
 
 // The built directory structure
 //
@@ -17,6 +18,7 @@ process.env.VITE_PUBLIC = app.isPackaged
 
 let win: BrowserWindow | null;
 let sessionType = "";
+let globalQuizFilePath = "";
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
@@ -44,6 +46,45 @@ function createWindow() {
 
   ipcMain.on("get-session-type", () => {
     webContents.send("receive-session-type", sessionType);
+  });
+
+  ipcMain.on("export-quiz-JSON", (event, JSONString: string) => {
+    dialog
+      .showSaveDialog({
+        filters: [{ name: "JSON file", extensions: ["json"] }],
+      })
+      .then((res: any) => {
+        if (res.filePath !== undefined && res.filePath !== "") {
+          let exportFilePath: string;
+          if (res.filePath.split(".").length === 1) {
+            exportFilePath = res.filePath + ".json";
+          } else {
+            if (
+              res.filePath.split(".")[res.filePath.split(".").length - 1] ===
+              "json"
+            ) {
+              exportFilePath = res.filePath;
+            } else {
+              exportFilePath = res.filePath + ".json";
+            }
+          }
+          const fs = require("node:fs");
+          fs.writeFile(exportFilePath, JSONString, (err: any) => {
+            if (err) {
+              console.error(err);
+            } else {
+              globalQuizFilePath = exportFilePath;
+              webContents.send(
+                "receive-global-quiz-file-path",
+                globalQuizFilePath
+              );
+            }
+          });
+        }
+      })
+      .catch((err: any) => {
+        console.error(err);
+      });
   });
 
   if (VITE_DEV_SERVER_URL) {

@@ -17,6 +17,72 @@
     border-radius: 10px;
     .questions-container {
       overflow-y: scroll;
+      height: 90%;
+      @include mixins.BasicComponentScrollbar;
+      .question-item {
+        transition: 500ms ease;
+        width: 80%;
+        border: 1px solid grey;
+        border-radius: 5px;
+        display: block;
+        margin: 20px auto;
+        padding: 10px 0;
+        overflow-x: scroll;
+        @include mixins.BasicComponentScrollbar;
+        ol {
+          padding: 5px 0;
+          width: 80%;
+          margin: 0 auto;
+          display: grid;
+          grid-template: 1fr 1fr;
+          li {
+            width: 100%;
+            list-style-type: upper-latin;
+            width: fit-content;
+          }
+        }
+        &:hover {
+          background: rgb(230, 230, 230);
+        }
+      }
+      .new-question {
+        transition: 500ms ease;
+        width: 80%;
+        height: 300px;
+        display: block;
+        margin: 10px auto;
+        padding: 10px;
+        border: 1px solid black;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 5%;
+        input[type="text"] {
+          width: 50%;
+        }
+        label {
+          display: block;
+        }
+        fieldset {
+          width: 80%;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr 1fr;
+          gap: 2px;
+          padding: 5px 10px 10px 10px;
+          input[type="text"] {
+            width: 100%;
+          }
+        }
+        input[type="submit"] {
+          padding: 5px;
+        }
+        &:hover {
+          background: rgb(230, 230, 230);
+        }
+      }
     }
     .creator-menu-bar {
       position: absolute;
