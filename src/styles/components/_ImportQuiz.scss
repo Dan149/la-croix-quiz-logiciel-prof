@@ -1,0 +1,5 @@
+@use "../mixins";
+
+.import-quiz-container {
+  @include mixins.BackButton;
+}

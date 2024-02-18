@@ -30,6 +30,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
+  //win.setMenu(null);
   const webContents = win.webContents;
 
   ipcMain.on("get-app-version", async () => {
