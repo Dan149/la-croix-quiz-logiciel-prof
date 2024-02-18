@@ -46,3 +46,35 @@
     }
   }
 }
+
+@mixin BasicQuestionsViewerStyle {
+  overflow-y: scroll;
+  height: 90%;
+  @include BasicComponentScrollbar;
+  .question-item {
+    transition: 500ms ease;
+    width: 80%;
+    border: 1px solid grey;
+    border-radius: 5px;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 0;
+    overflow-x: scroll;
+    @include BasicComponentScrollbar;
+    ol {
+      padding: 5px 0;
+      width: 80%;
+      margin: 0 auto;
+      display: grid;
+      grid-template: 1fr 1fr;
+      li {
+        width: 100%;
+        list-style-type: upper-latin;
+        width: fit-content;
+      }
+    }
+    &:hover {
+      background: rgb(230, 230, 230);
+    }
+  }
+}

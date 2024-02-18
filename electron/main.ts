@@ -19,6 +19,7 @@ process.env.VITE_PUBLIC = app.isPackaged
 let win: BrowserWindow | null;
 let sessionType = "";
 let globalQuizFilePath = "";
+let quizJSONConfig = "";
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
@@ -73,6 +74,7 @@ function createWindow() {
             if (err) {
               console.error(err);
             } else {
+              quizJSONConfig = JSONString;
               globalQuizFilePath = exportFilePath;
               webContents.send(
                 "receive-global-quiz-file-path",
@@ -85,6 +87,36 @@ function createWindow() {
       .catch((err: any) => {
         console.error(err);
       });
+  });
+
+  ipcMain.on("import-json-quiz-file", () => {
+    dialog
+      .showOpenDialog({
+        properties: ["openFile"],
+        filters: [{ name: "JSON file", extensions: ["json"] }],
+      })
+      .then((res: any) => {
+        if (res.filePaths.length === 1) {
+          globalQuizFilePath = res.filePaths[0];
+          const fs = require("node:fs");
+          fs.readFile(globalQuizFilePath, "utf8", (err: any, data: string) => {
+            if (err) {
+              console.error(err);
+            } else {
+              quizJSONConfig = data;
+              webContents.send("receive-json-quiz-file", quizJSONConfig);
+            }
+          });
+        }
+      });
+  });
+
+  ipcMain.on("get-global-quiz-file-path", () => {
+    webContents.send("receive-global-quiz-file-path", globalQuizFilePath);
+  });
+
+  ipcMain.on("get-json-quiz-file", () => {
+    webContents.send("receive-json-quiz-file", quizJSONConfig);
   });
 
   if (VITE_DEV_SERVER_URL) {

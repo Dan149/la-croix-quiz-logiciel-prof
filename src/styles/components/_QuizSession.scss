@@ -1,0 +1,22 @@
+@use "../mixins";
+.quiz-session-container {
+  h2 {
+    padding: 20px;
+  }
+  .start-quiz-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    background: rgb(209, 255, 209);
+    border: 1px solid green;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 1.2rem;
+    transition: 250ms ease;
+    transform: translate(-50%, -50%);
+    &:hover {
+      background: rgb(182, 255, 182);
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+  }
+}

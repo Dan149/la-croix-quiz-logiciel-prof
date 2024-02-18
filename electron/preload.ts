@@ -18,8 +18,20 @@ contextBridge.exposeInMainWorld("api", {
   exportQuizJSON: async (JSONString: string) => {
     await ipcRenderer.send("export-quiz-JSON", JSONString);
   },
+  importQuizJSON: async (callback: any) => {
+    await ipcRenderer.send("import-json-quiz-file");
+    await ipcRenderer.on("receive-json-quiz-file", callback);
+  },
   //
   receiveGlobalQuizFilePath: async (callback: any) => {
     await ipcRenderer.on("receive-global-quiz-file-path", callback);
+  },
+  getGlobalQuizFilePath: async () => {
+    await ipcRenderer.send("get-global-quiz-file-path");
+  },
+  //
+  getQuizJSON: async (callback: any) => {
+    ipcRenderer.send("get-json-quiz-file");
+    await ipcRenderer.on("receive-json-quiz-file", callback);
   },
 });

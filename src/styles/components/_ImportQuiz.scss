@@ -2,4 +2,36 @@
 
 .import-quiz-container {
   @include mixins.BackButton;
+  width: 80%;
+  display: block;
+  margin: 0 auto;
+  h2 {
+    padding: 20px;
+    text-align: center;
+  }
+  button {
+    border: 0px;
+    background: rgb(196, 196, 196);
+    transition: 250ms ease;
+    padding: 5px 10px;
+    &:hover {
+      background: rgb(241, 241, 241);
+      text-decoration: underline;
+    }
+  }
+  .file-selection {
+    border: 1px solid grey;
+    width: 100%;
+    display: block;
+    margin: 0 auto;
+    .questions-container {
+      @include mixins.BasicQuestionsViewerStyle;
+      .question-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
+    }
+  }
 }

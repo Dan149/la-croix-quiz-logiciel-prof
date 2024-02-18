@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import BackButton from "./BackButton";
+import QuizSession from "./QuizSession";
 
 const CreateNewQuiz = () => {
     const [createNewQuestion, setCreateNewQuestion] = useState(false);
@@ -32,7 +33,7 @@ const CreateNewQuiz = () => {
     return (
         <div className="create-quiz-container">
             <BackButton />
-            {globalQuizFilePath !== "" ? <div>{globalQuizFilePath}</div> : (
+            {globalQuizFilePath !== "" ? <QuizSession globalQuizFilePath={globalQuizFilePath} /> : (
                 <>
                     <h2>
                         Création du quiz:
