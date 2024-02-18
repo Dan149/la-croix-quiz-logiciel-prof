@@ -3,18 +3,17 @@ import BackButton from "./BackButton";
 
 const CreateNewQuiz = () => {
     const [createNewQuestion, setCreateNewQuestion] = useState(false);
-    const [questionArray, setQuestionArray] = useState([]);
+    const [questionArray, setQuestionArray] = useState<object[]>([]);
 
     const handleNewQuestionSubmit = (e: any) => {
         e.preventDefault()
-        console.log(e)
         const newQuestion = {
             question: e.target[0].value,
-            possibleAnswers: e.target[1].elements.filter((element: any) => element.value !== ''),
-            validAnswer: e.target[2].value
+            possibleAnswers: [e.target[1].elements[0].value, e.target[1].elements[1].value, e.target[1].elements[2].value, e.target[1].elements[3].value].filter((element: any) => element !== ''),
+            validAnswer: e.target[6].value
         }
-        console.log(newQuestion);
-
+        setQuestionArray((questionArray) => [...questionArray, newQuestion])
+        setCreateNewQuestion(false)
     }
 
     return (
@@ -26,14 +25,14 @@ const CreateNewQuiz = () => {
             <div id="quiz-creator">
 
                 <div className="questions-container">
-                    {questionArray.map((question: any) => {
+                    {questionArray.map((question: any, i) => {
                         return (
-                            <div className="question-item">
+                            <div className="question-item" key={i}>
                                 <span>{question.question}</span>
-                                <ol>{question.possibleAnswers.map((possibleAnswer: any) => {
-                                    <li>{possibleAnswer}</li>
+                                <ol>{question.possibleAnswers.map((possibleAnswer: string, i: number) => {
+                                    <li key={i}>{possibleAnswer}</li>
                                 })}</ol>
-                                <span>Réponse: {question.validAnswer}</span>
+                                <span>Réponse: {question.possibleAnswers[parseInt(question.validAnswer)]}</span>
                             </div>)
                     })}
                     {createNewQuestion ? (
@@ -49,10 +48,10 @@ const CreateNewQuiz = () => {
                             </fieldset>
                             <label htmlFor="valid-answer">Bonne réponse:</label>
                             <select name="valid-answer" id="valid-answer" required>
-                                <option value="a">Réponse A</option>
-                                <option value="b">Réponse B</option>
-                                <option value="c">Réponse C</option>
-                                <option value="d">Réponse D</option>
+                                <option value="0">Réponse A</option>
+                                <option value="1">Réponse B</option>
+                                <option value="2">Réponse C</option>
+                                <option value="3">Réponse D</option>
                             </select>
                             <input type="submit" value="Valider" />
                         </form>
