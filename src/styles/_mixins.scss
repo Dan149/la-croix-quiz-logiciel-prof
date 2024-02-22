@@ -78,3 +78,16 @@
     }
   }
 }
+
+@mixin BasicButton {
+  transition: 250ms ease;
+  padding: 5px 20px;
+  background: white;
+  box-shadow: 2px 2px 10px #a3a3a3, -2px -2px 10px #ffffff;
+  border: 1px solid black;
+  border-radius: 3px;
+  &:hover {
+    background: rgb(228, 218, 255);
+    text-decoration: underline;
+  }
+}

@@ -34,4 +34,14 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("get-json-quiz-file");
     await ipcRenderer.on("receive-json-quiz-file", callback);
   },
+  // QuizAPIServer => express.js
+  startQuizAPIServer: () => {
+    ipcRenderer.send("start-quiz-API-server");
+  },
+  stopQuizAPIServer: () => {
+    ipcRenderer.send("stop-quiz-API-server");
+  },
+  getQuizAPIServerStatus: (callback: any) => {
+    ipcRenderer.on("get-quiz-API-server-status", callback);
+  },
 });

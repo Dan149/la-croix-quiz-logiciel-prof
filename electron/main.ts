@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, ipcMain, session, webContents } from "electron";
 import path from "node:path";
 const { dialog } = require("electron");
 
@@ -17,11 +17,30 @@ process.env.VITE_PUBLIC = app.isPackaged
   : path.join(process.env.DIST, "../public");
 
 let win: BrowserWindow | null;
-let sessionType = "";
-let globalQuizFilePath = "";
-let quizJSONConfig = "";
+let sessionType: string = "";
+let globalQuizFilePath: string = "";
+let quizJSONConfig: string = "";
+let QuizAPIServerPort: number = 3333;
+let winWebContents: any = null;
+// API server init:
+const express: any = require("express");
+const cors: any = require("cors");
+const APIServer = express();
+let runningAPIServer: any = null;
+APIServer.use(cors());
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
+
+const startQuizAPIServer = () => {
+  const port = QuizAPIServerPort;
+  runningAPIServer = APIServer.listen(port, () => {
+    winWebContents.send("get-quiz-API-server-status", {
+      type: "info",
+      message: `Le serveur du quiz est ouvert sur le port [${port}].`,
+    });
+    // type: "info" / "erreur" / "attention"
+  });
+};
 
 function createWindow() {
   win = new BrowserWindow({
@@ -35,6 +54,7 @@ function createWindow() {
   });
   //win.setMenu(null);
   const webContents = win.webContents;
+  winWebContents = win.webContents;
 
   ipcMain.on("get-app-version", async () => {
     webContents.send("receive-app-version", app.getVersion());
@@ -117,6 +137,20 @@ function createWindow() {
 
   ipcMain.on("get-json-quiz-file", () => {
     webContents.send("receive-json-quiz-file", quizJSONConfig);
+  });
+
+  ipcMain.on("start-quiz-API-server", () => startQuizAPIServer());
+
+  ipcMain.on("stop-quiz-API-server", () => {
+    webContents.send("get-quiz-API-server-status", {
+      type: "info",
+      message: "Fermeture du  serveur...",
+    });
+    runningAPIServer.close();
+    webContents.send("get-quiz-API-server-status", {
+      type: "info",
+      message: "Serveur de session quiz fermé.",
+    });
   });
 
   if (VITE_DEV_SERVER_URL) {
