@@ -27,12 +27,30 @@ const express: any = require("express");
 const cors: any = require("cors");
 const APIServer = express();
 let runningAPIServer: any = null;
+let allowClientQuizStart = false;
 APIServer.use(cors());
+APIServer.use(express.json());
+
+const usersData = [];
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 const startQuizAPIServer = () => {
   const port = QuizAPIServerPort;
+  APIServer.get("/is-quiz-started", (req: any, res: any) => {
+    // res.json({ quizStartAllowed: allowClientQuizStart });
+    res.send(allowClientQuizStart);
+  });
+  APIServer.post("/join-session", (req: any, res: any) => {
+    const newUserId = usersData.length;
+    res.send(`${newUserId}`);
+    usersData.push({
+      nom: req.body.nom,
+      prenom: req.body.prenom,
+      id: newUserId,
+    });
+    console.log(usersData);
+  });
   runningAPIServer = APIServer.listen(port, () => {
     winWebContents.send("get-quiz-API-server-status", {
       type: "info",
@@ -146,12 +164,37 @@ function createWindow() {
       type: "info",
       message: "Fermeture du  serveur...",
     });
-    runningAPIServer.close();
-    webContents.send("get-quiz-API-server-status", {
-      type: "info",
-      message: "Serveur de session quiz fermé.",
-    });
+    try {
+      runningAPIServer.close();
+      allowClientQuizStart = false;
+      webContents.send("get-quiz-API-server-status", {
+        type: "info",
+        message: "Serveur de session quiz fermé.",
+      });
+    } catch {
+      webContents.send("get-quiz-API-server-status", {
+        type: "erreur",
+        message: "FATAL: fermeture du serveur de quiz échoué.",
+      });
+    }
   });
+
+  ipcMain.on("allow-quiz-start", () => {
+    try {
+      allowClientQuizStart = true;
+      webContents.send("get-quiz-API-server-status", {
+        type: "info",
+        message: "Début du quiz autorisé.",
+      });
+    } catch {
+      webContents.send("get-quiz-API-server-status", {
+        type: "erreur",
+        message: "FATAL: échec d'autorisation de début du quiz.",
+      });
+    }
+  });
+
+  //
 
   if (VITE_DEV_SERVER_URL) {
     win.loadURL(VITE_DEV_SERVER_URL);

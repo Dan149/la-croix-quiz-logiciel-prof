@@ -4,6 +4,7 @@ import BackButton from "./BackButton";
 const QuizSession = (props: any) => { // filepath
   const [quizAPIServerEvents, setQuizAPIServerEvents] = useState<any[]>([])
   const [isAPIServerOn, setIsAPIServerOn] = useState(false)
+  const [isQuizStartAllowed, setIsQuizStartAllowed] = useState(false)
   const useEffectInitialized = useRef(false)
 
   const handleQuizAPIServerStart = async () => {
@@ -19,7 +20,12 @@ const QuizSession = (props: any) => { // filepath
   const handleQuizAPIServerLogs = () => {
     window.api.getQuizAPIServerStatus((event: void, realEvent: any) => {
       setQuizAPIServerEvents((quizAPIServerEvents) => [...quizAPIServerEvents, realEvent])
-    })
+    });
+  }
+
+  const allowQuizStart = () => {
+    window.api.allowQuizStart();
+    setIsQuizStartAllowed(true)
   }
 
   useEffect(() => {
@@ -44,6 +50,7 @@ const QuizSession = (props: any) => { // filepath
           </div>;
         })}
       </div> : <div className="empty-space"></div>}
+      {isAPIServerOn && !isQuizStartAllowed ? <button onClick={() => allowQuizStart()}>Autoriser le début du quiz</button> : ""}
       {isAPIServerOn ? <button className="stop-quiz-btn" onClick={() => handleQuizAPIServerStop()}>Fermer la session</button> : <button className="start-quiz-btn" onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
 
     </div>

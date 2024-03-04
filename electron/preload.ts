@@ -44,4 +44,7 @@ contextBridge.exposeInMainWorld("api", {
   getQuizAPIServerStatus: (callback: any) => {
     ipcRenderer.on("get-quiz-API-server-status", callback);
   },
+  allowQuizStart: () => {
+    ipcRenderer.send("allow-quiz-start");
+  },
 });
