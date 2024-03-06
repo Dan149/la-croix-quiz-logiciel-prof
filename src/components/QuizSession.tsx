@@ -15,6 +15,7 @@ const QuizSession = (props: any) => { // filepath
   const handleQuizAPIServerStop = () => {
     window.api.stopQuizAPIServer();
     setIsAPIServerOn(false);
+    setIsQuizStartAllowed(false);
   }
 
   const handleQuizAPIServerLogs = () => {
