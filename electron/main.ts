@@ -38,7 +38,6 @@ const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 const startQuizAPIServer = () => {
     const port = QuizAPIServerPort;
     APIServer.get("/is-quiz-started", (req: any, res: any) => {
-        // res.json({ quizStartAllowed: allowClientQuizStart });
         res.send(allowClientQuizStart);
     });
     APIServer.post("/get-question", (req: any, res: any) => {
@@ -58,8 +57,6 @@ const startQuizAPIServer = () => {
                 req.body.answerValidity; // bool
             res.send("ok");
         } catch (err) {
-            console.log(err);
-
             res.send("error");
         }
     });
@@ -203,7 +200,7 @@ function createWindow() {
 
     ipcMain.on("stop-quiz-API-server", () => {
         webContents.send("get-quiz-API-server-status", {
-            type: "info",
+            type: "attention",
             message: "Fermeture du  serveur...",
         });
         try {
