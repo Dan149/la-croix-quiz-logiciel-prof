@@ -20,6 +20,7 @@ let win: BrowserWindow | null;
 let sessionType: string = "";
 let globalQuizFilePath: string = "";
 let quizJSONConfig: string = "";
+let parsedQuizJSONConfig: any = {};
 let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
 // API server init:
@@ -41,14 +42,18 @@ const startQuizAPIServer = () => {
         res.send(allowClientQuizStart);
     });
     APIServer.post("/get-question", (req: any, res: any) => {
-        const question = JSON.parse(quizJSONConfig)[req.body.questionId];
-        res.json({
-            question: question.question,
-            possibleAnswers: question.possibleAnswers,
-        });
+        if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
+            const question = parsedQuizJSONConfig[req.body.questionId];
+            res.json({
+                question: question.question,
+                possibleAnswers: question.possibleAnswers,
+            });
+        } else {
+            res.send("end");
+        }
     });
     APIServer.post("/get-question-answer", (req: any, res: any) => {
-        const question = JSON.parse(quizJSONConfig)[req.body.questionId];
+        const question = parsedQuizJSONConfig[req.body.questionId];
         res.send(question.validAnswer);
     });
     APIServer.post("/register-user-answer-validity", (req: any, res: any) => {
@@ -68,7 +73,7 @@ const startQuizAPIServer = () => {
                 nom: req.body.nom,
                 prenom: req.body.prenom,
                 id: newUserId,
-                answersValidity: new Array(JSON.parse(quizJSONConfig).length), // array of bool
+                answersValidity: new Array(parsedQuizJSONConfig.length), // array of bool
             });
 
             winWebContents.send("get-quiz-API-server-status", {
@@ -145,6 +150,7 @@ function createWindow() {
                             console.error(err);
                         } else {
                             quizJSONConfig = JSONString;
+                            parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
                             globalQuizFilePath = exportFilePath;
                             webContents.send(
                                 "receive-global-quiz-file-path",
@@ -177,6 +183,8 @@ function createWindow() {
                                 console.error(err);
                             } else {
                                 quizJSONConfig = data;
+                                parsedQuizJSONConfig =
+                                    JSON.parse(quizJSONConfig);
                                 webContents.send(
                                     "receive-json-quiz-file",
                                     quizJSONConfig
