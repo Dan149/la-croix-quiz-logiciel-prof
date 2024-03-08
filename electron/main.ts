@@ -49,6 +49,7 @@ const startQuizAPIServer = () => {
                 possibleAnswers: question.possibleAnswers,
             });
         } else {
+            usersData[req.body.userId].hasFinished = true;
             res.send("end");
         }
     });
@@ -74,6 +75,7 @@ const startQuizAPIServer = () => {
                 prenom: req.body.prenom,
                 id: newUserId,
                 answersValidity: new Array(parsedQuizJSONConfig.length), // array of bool
+                hasFinished: false, // quiz finished or not
             });
 
             winWebContents.send("get-quiz-API-server-status", {
@@ -218,6 +220,7 @@ function createWindow() {
                 type: "info",
                 message: "Serveur de session quiz fermé.",
             });
+            usersData.length = 0;
         } catch {
             webContents.send("get-quiz-API-server-status", {
                 type: "erreur",
@@ -239,6 +242,12 @@ function createWindow() {
                 message: "FATAL: échec d'autorisation de début du quiz.",
             });
         }
+    });
+    ipcMain.on("get-users-data", () => {
+        webContents.send("receive-users-data", usersData);
+    });
+    ipcMain.on("reset-users-data", () => {
+        usersData.length = 0;
     });
 
     //

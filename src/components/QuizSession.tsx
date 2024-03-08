@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import BackButton from "./BackButton";
+import UserDataDisplay from "./UserDataDisplay";
 
 const QuizSession = (props: any) => { // filepath
   const [quizAPIServerEvents, setQuizAPIServerEvents] = useState<any[]>([])
@@ -51,9 +52,9 @@ const QuizSession = (props: any) => { // filepath
           </div>;
         })}
       </div> : <div className="empty-space"></div>}
-      {isAPIServerOn && !isQuizStartAllowed ? <button onClick={() => allowQuizStart()}>Autoriser le début du quiz</button> : ""}
-      {isAPIServerOn ? <button className="stop-quiz-btn" onClick={() => handleQuizAPIServerStop()}>Fermer la session</button> : <button className="start-quiz-btn" onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
-
+      {isAPIServerOn && !isQuizStartAllowed ? <button onClick={() => allowQuizStart()} className="allow-start-btn btn">Autoriser le début du quiz</button> : ""}
+      {isAPIServerOn ? <button className="stop-quiz-btn btn" onClick={() => handleQuizAPIServerStop()}>Fermer la session</button> : <button className="start-quiz-btn btn" onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
+      {isQuizStartAllowed ? <UserDataDisplay /> : ""}
     </div>
   );
 };
