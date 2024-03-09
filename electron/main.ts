@@ -69,19 +69,32 @@ const startQuizAPIServer = () => {
     APIServer.post("/join-session", (req: any, res: any) => {
         const newUserId = usersData.length;
         try {
-            res.send(`${newUserId}`);
-            usersData.push({
-                nom: req.body.nom,
-                prenom: req.body.prenom,
-                id: newUserId,
-                answersValidity: new Array(parsedQuizJSONConfig.length), // array of bool
-                hasFinished: false, // quiz finished or not
-            });
-
-            winWebContents.send("get-quiz-API-server-status", {
-                type: "info",
-                message: `Utilisateur ${req.body.nom} ${req.body.prenom} ajouté sous l'identifiant ${newUserId}.`,
-            });
+            if (
+                !usersData.some(
+                    (user: any) =>
+                        user.nom === req.body.nom &&
+                        user.prenom === req.body.prenom
+                )
+            ) {
+                usersData.push({
+                    nom: req.body.nom,
+                    prenom: req.body.prenom,
+                    id: newUserId,
+                    answersValidity: new Array(parsedQuizJSONConfig.length), // array of bool
+                    hasFinished: false, // quiz finished or not
+                });
+                res.json({ userId: newUserId, serverStatus: "ok" });
+                winWebContents.send("get-quiz-API-server-status", {
+                    type: "info",
+                    message: `Utilisateur ${req.body.nom} ${req.body.prenom} ajouté sous l'identifiant ${newUserId}.`,
+                });
+            } else {
+                res.json({
+                    serverStatus: "error",
+                    errorMessage:
+                        "L'utilisateur existe déjà. Veuillez changer le nom",
+                });
+            }
         } catch (err: any) {
             winWebContents.send("get-quiz-API-server-status", {
                 type: "erreur",
