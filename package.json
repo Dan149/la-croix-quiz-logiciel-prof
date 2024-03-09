@@ -1,10 +1,12 @@
 {
   "name": "la-croix-quiz",
-  "private": true,
+  "author": "Daniel Falkov",
+  "description": "Logiciel de quiz scolaire proposé par Saint Jean & La Croix, permettant de lancer un quiz joignable sur un réseau local par les élèves depuis n'importe quel navigateur web.", 
+  "private": false,
   "version": "0.0.1",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "build": "vite build && electron-builder",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
