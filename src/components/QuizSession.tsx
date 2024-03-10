@@ -52,9 +52,9 @@ const QuizSession = (props: any) => { // filepath
           </div>;
         })}
       </div> : <div className="empty-space"></div>}
+      {isQuizStartAllowed ? <UserDataDisplay /> : ""}
       {isAPIServerOn && !isQuizStartAllowed ? <button onClick={() => allowQuizStart()} className="allow-start-btn btn">Autoriser le début du quiz</button> : ""}
       {isAPIServerOn ? <button className="stop-quiz-btn btn" onClick={() => handleQuizAPIServerStop()}>Fermer la session</button> : <button className="start-quiz-btn btn" onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
-      {isQuizStartAllowed ? <UserDataDisplay /> : ""}
     </div>
   );
 };

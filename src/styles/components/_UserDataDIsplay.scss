@@ -1,87 +1,87 @@
 @use "../mixins";
 .user-data-display {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  bottom: 2%;
+  right: 2%;
+  background: rgba(255, 255, 255, 0.788);
+  border-radius: 10px;
+  border: 1px solid black;
+  .users-cards-container {
     position: absolute;
     top: 2%;
     left: 2%;
     bottom: 2%;
     right: 2%;
-    background: rgba(255, 255, 255, 0.788);
-    border-radius: 10px;
-    border: 1px solid black;
-    .users-cards-container {
-        position: absolute;
-        top: 2%;
-        left: 2%;
-        bottom: 2%;
-        right: 2%;
-        @include mixins.BasicComponentScrollbar;
-        overflow-y: scroll;
-        margin: 60px 10px 20px 10px;
-        display: flex;
-        align-items: start;
-        justify-content: start;
-        flex-wrap: wrap;
-        gap: 4%;
-        .user-card {
-            width: 30%;
-            margin: 10px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 10%;
-            height: 50%;
-            padding: 10px;
-            border-radius: 9px;
-            background: linear-gradient(145deg, #cacaca, #f0f0f0);
-            box-shadow: 6px 6px 12px #d0d0d0, -6px -6px 12px #f0f0f0;
-            @media screen and (max-width: 560px) {
-                width: 45%;
-            }
-            @media screen and (min-width: 800px) {
-                width: 20%;
-            }
-            ul {
-                text-align: center;
-                li {
-                    display: block;
-                    span {
-                        font-weight: bold;
-                    }
-                }
-            }
-            .quiz-results {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex-wrap: wrap;
-                width: 80%;
-                gap: 5%;
-                .dot-item {
-                    margin-top: 3px;
-                    font-size: 0.6rem;
-                    width: 1.2rem;
-                    height: 1.2rem;
-                    border-radius: 1000px;
-                    color: white;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .right-answer {
-                    background: rgb(0, 59, 0);
-                    border: 1px solid green;
-                }
-                .wrong-answer {
-                    background: rgb(105, 11, 11);
-                    border: 1px solid red;
-                }
-            }
+    @include mixins.BasicComponentScrollbar;
+    overflow-y: scroll;
+    margin: 60px 10px 20px 10px;
+    display: flex;
+    align-items: start;
+    justify-content: start;
+    flex-wrap: wrap;
+    gap: 4%;
+    .user-card {
+      width: 30%;
+      margin: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10%;
+      height: 50%;
+      padding: 10px;
+      border-radius: 9px;
+      background: linear-gradient(145deg, #cacaca, #f0f0f0);
+      box-shadow: 6px 6px 12px #d0d0d0, -6px -6px 12px #f0f0f0;
+      @media screen and (max-width: 560px) {
+        width: 45%;
+      }
+      @media screen and (min-width: 800px) {
+        width: 20%;
+      }
+      ul {
+        text-align: center;
+        li {
+          display: block;
+          span {
+            font-weight: bold;
+          }
         }
+      }
+      .quiz-results {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        width: 80%;
+        gap: 5%;
+        .dot-item {
+          margin-top: 3px;
+          font-size: 0.6rem;
+          width: 1.2rem;
+          height: 1.2rem;
+          border-radius: 1000px;
+          color: white;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .right-answer {
+          background: rgb(0, 59, 0);
+          border: 1px solid green;
+        }
+        .wrong-answer {
+          background: rgb(105, 11, 11);
+          border: 1px solid red;
+        }
+      }
     }
+  }
 }
 .user-data-display-btn {
-    margin: 0 auto;
-    display: block;
-    margin-top: 10px;
+  margin: 0 auto;
+  display: block;
+  margin-bottom: 10px;
 }

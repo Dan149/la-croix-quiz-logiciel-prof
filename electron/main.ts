@@ -1,6 +1,9 @@
 import { app, BrowserWindow, ipcMain, session, webContents } from "electron";
 import path from "node:path";
 const { dialog } = require("electron");
+const express: any = require("express");
+const cors: any = require("cors");
+const session: any = require("express-session");
 
 // The built directory structure
 //
@@ -24,32 +27,41 @@ let parsedQuizJSONConfig: any = {};
 let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
 // API server init:
-const express: any = require("express");
-const cors: any = require("cors");
 const APIServer = express();
 let runningAPIServer: any = null;
 let allowClientQuizStart = false;
 APIServer.use(cors());
 APIServer.use(express.json());
+APIServer.use(
+  session({
+    secret: "AZé&Ddaz39032302ejczçEJO4I1dU2fàief3029##",
+    cookie: {
+      httpOnly: true,
+      sameSite: true,
+    },
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 APIServer.use(express.static(path.join(process.env.VITE_PUBLIC, "/client")));
 
 const usersData: any = [];
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
-const authClientIPAddress = (clientIP: string) => {
+const authClientIPAddress = (clientIP: string, sessionId: string) => {
   if (clientIP === "::1" || clientIP === "::ffff:127.0.0.1") {
     return true;
   } else {
-    const filteredUsersData = usersData.filter(
-      (user: any) => clientIP === user.clientIP
+    const filteredSessionUsersData = usersData.filter(
+      (user: any) => sessionId === user.sessionId
     );
-    if (filteredUsersData.length === 1) {
+    if (filteredSessionUsersData.length === 1) {
       return true;
     } else {
       winWebContents.send("get-quiz-API-server-status", {
         type: "erreur",
-        message: `Authentification IP échoué, suspicion de triche sur le poste ${clientIP} !`,
+        message: `Authentification échoué, suspicion de triche sur le poste ${clientIP} !`,
       });
       return false;
     }
@@ -64,13 +76,18 @@ const startQuizAPIServer = () => {
   APIServer.get("/", (req: any, res: any) => {
     res.redirect("/index.html");
   });
+  APIServer.get("/quiz", (req: any, res: any) => {
+    res.redirect("/index.html");
+  });
   APIServer.get("/is-quiz-started", (req: any, res: any) => {
-    if (authClientIPAddress(req.socket.remoteAddress)) {
+    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       res.send(allowClientQuizStart);
+    } else {
+      res.send(false);
     }
   });
   APIServer.post("/get-question", (req: any, res: any) => {
-    if (authClientIPAddress(req.socket.remoteAddress)) {
+    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
         const question = parsedQuizJSONConfig[req.body.questionId];
         res.json({
@@ -84,13 +101,13 @@ const startQuizAPIServer = () => {
     }
   });
   APIServer.post("/get-question-answer", (req: any, res: any) => {
-    if (authClientIPAddress(req.socket.remoteAddress)) {
+    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       const question = parsedQuizJSONConfig[req.body.questionId];
       res.send(question.validAnswer);
     }
   });
   APIServer.post("/register-user-answer-validity", (req: any, res: any) => {
-    if (authClientIPAddress(req.socket.remoteAddress)) {
+    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       try {
         usersData[req.body.userId].answersValidity[req.body.questionId] =
           req.body.answerValidity; // bool
@@ -117,6 +134,7 @@ const startQuizAPIServer = () => {
           hasFinished: false, // quiz finished or not
           // security:
           clientIP: req.socket.remoteAddress,
+          sessionId: req.session.id,
         });
         res.json({ userId: newUserId, serverStatus: "ok" });
         winWebContents.send("get-quiz-API-server-status", {
@@ -155,7 +173,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  win.setMenu(null);
+  // win.setMenu(null);
   const webContents = win.webContents;
   winWebContents = win.webContents;
 

@@ -43,6 +43,9 @@ const ImportQuiz = () => {
                             {importedQuizJSONFile.map((question: any, i) => {
                                 return (
                                     <div className="question-item" key={i}>
+                                        <div className="amount">
+                                            {i + 1}/{importedQuizJSONFile.length}
+                                        </div>
                                         <h4>{question.question}</h4>
                                         <ol type="A">{
                                             question.possibleAnswers.map((possibleAnswer: string, i: number) => {

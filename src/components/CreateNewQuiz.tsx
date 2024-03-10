@@ -12,7 +12,7 @@ const CreateNewQuiz = () => {
         const newQuestion = {
             question: e.target[0].value,
             possibleAnswers: [e.target[1].elements[0].value, e.target[1].elements[1].value, e.target[1].elements[2].value, e.target[1].elements[3].value].filter((element: any) => element !== ''),
-            validAnswer: e.target[6].value
+            validAnswer: e.target[6].value,
         }
         if (newQuestion.possibleAnswers[parseInt(newQuestion.validAnswer)]) {
             setQuestionArray((questionArray) => [...questionArray, newQuestion])
@@ -22,6 +22,11 @@ const CreateNewQuiz = () => {
 
     const handleQuizExport = () => {
         window.api.exportQuizJSON(JSON.stringify(questionArray))
+    }
+
+    const handleQuestionRemove = (e: any, key: number) => {
+        const newQuestionArray = questionArray.filter((question: any, index) => index !== key)
+        setQuestionArray(newQuestionArray)
     }
 
     useEffect(() => {
@@ -39,11 +44,19 @@ const CreateNewQuiz = () => {
                         Création du quiz:
                     </h2>
                     <div id="quiz-creator">
+                        <div className="menu-bar">
 
+                            <button onClick={() => setCreateNewQuestion(true)}>Nouvelle Question</button>
+                            <button onClick={() => handleQuizExport()}>Sauvegarder Quiz</button>
+                        </div>
                         <div className="questions-container">
                             {questionArray.map((question: any, i) => {
                                 return (
                                     <div className="question-item" key={i}>
+                                        <div className="amount">
+                                            {i + 1}/{questionArray.length}
+                                        </div>
+                                        <img className="remove-btn" src="./img/remove.svg" alt="supprimer la question" onClick={(e: any, key: number = i) => handleQuestionRemove(e, key)} />
                                         <h4>{question.question}</h4>
                                         <ol type="A">{
                                             question.possibleAnswers.map((possibleAnswer: string, i: number) => {
@@ -56,7 +69,7 @@ const CreateNewQuiz = () => {
                             {createNewQuestion ? (
                                 <form className="new-question" onSubmit={(e) => handleNewQuestionSubmit(e)}>
                                     <label htmlFor="question">Question:</label>
-                                    <input type="text" name="question" placeholder="Ecrire une question..." maxLength={80} required />
+                                    <input type="text" name="question" placeholder="Ecrire une question..." maxLength={100} required />
                                     <fieldset>
                                         <legend>Réponses possibles (2 minimum):</legend>
                                         <input type="text" name="answer-a" placeholder="Réponse A" maxLength={80} required />
@@ -74,13 +87,6 @@ const CreateNewQuiz = () => {
                                     <input type="submit" value="Valider" />
                                 </form>
                             ) : ""}
-                        </div>
-
-                        <div className="creator-menu-bar">
-                            <ul>
-                                <li onClick={() => setCreateNewQuestion(true)}>Nouvelle Question</li>
-                                <li onClick={() => handleQuizExport()}>Sauvegarder Quiz</li>
-                            </ul>
                         </div>
                     </div>
                 </>

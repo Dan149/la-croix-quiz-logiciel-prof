@@ -1,93 +1,109 @@
 @mixin BasicComponentContainerFeatures {
-    width: 100%;
-    height: 100%;
-    text-align: center;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  h2 {
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    h2 {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+  }
 }
 
 @mixin BackButton {
-    .back-btn {
-        position: absolute;
-        top: 12px;
-        transition: 500ms ease;
-        left: 10px;
-        width: 2rem;
-        border: 1px solid black;
-        border-radius: 1000px;
-        &:hover {
-            transform: rotate(-360deg);
-            background: rgb(255, 180, 180);
-        }
+  .back-btn {
+    position: absolute;
+    top: 12px;
+    transition: 500ms ease;
+    left: 10px;
+    width: 2rem;
+    border: 1px solid black;
+    border-radius: 1000px;
+    &:hover {
+      transform: rotate(-360deg);
+      background: rgb(255, 180, 180);
     }
+  }
 }
 
 @mixin BasicComponentScrollbar {
-    &::-webkit-scrollbar {
-        width: 10px;
-        height: 10px;
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgb(165, 165, 165);
+    border-radius: 10px;
+    &:hover {
+      background: rgb(124, 124, 124);
     }
-    &::-webkit-scrollbar-track {
-        box-shadow: inset 0 0 5px grey;
-        border-radius: 10px;
-    }
-    &::-webkit-scrollbar-thumb {
-        background: rgb(165, 165, 165);
-        border-radius: 10px;
-        &:hover {
-            background: rgb(124, 124, 124);
-        }
-    }
+  }
 }
 
 @mixin BasicQuestionsViewerStyle {
-    overflow-y: scroll;
-    height: 90%;
+  overflow-y: scroll;
+  height: 90%;
+  @include BasicComponentScrollbar;
+  .question-item {
+    position: relative;
+    transition: 500ms ease;
+    width: 80%;
+    border: 1px solid grey;
+    border-radius: 5px;
+    display: block;
+    margin: 20px auto;
+    padding: 10px 0;
+    overflow-x: scroll;
     @include BasicComponentScrollbar;
-    .question-item {
-        transition: 500ms ease;
-        width: 80%;
-        border: 1px solid grey;
-        border-radius: 5px;
-        display: block;
-        margin: 20px auto;
-        padding: 10px 0;
-        overflow-x: scroll;
-        @include BasicComponentScrollbar;
-        ol {
-            padding: 5px 0;
-            width: 80%;
-            margin: 0 auto;
-            display: grid;
-            grid-template: 1fr 1fr;
-            li {
-                width: 100%;
-                list-style-type: upper-latin;
-                width: fit-content;
-            }
-        }
-        &:hover {
-            background: rgb(230, 230, 230);
-        }
+    .amount {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-size: 0.8rem;
+      padding: 0.25rem 10px;
+      border: 1px solid black;
+      border-radius: 20px;
     }
+    h4 {
+      text-align: center;
+      margin: 0 auto;
+      margin-top: 4px;
+      width: 80%;
+    }
+    ol {
+      padding: 20px 0;
+      width: 80%;
+      margin: 0 auto;
+      display: grid;
+      grid-template: 1fr 1fr;
+      li {
+        width: 100%;
+        list-style-type: upper-latin;
+        width: fit-content;
+      }
+    }
+    &:hover {
+      background: rgb(230, 230, 230);
+    }
+  }
 }
 
 @mixin BasicButton {
-    transition: 250ms ease;
-    padding: 5px 20px;
-    background: white;
-    box-shadow: 2px 2px 10px #a3a3a3, -2px -2px 10px #ffffff;
-    border: 1px solid black;
-    border-radius: 3px;
-    &:hover {
-        background: rgb(228, 218, 255);
-        text-decoration: underline;
-    }
+  transition: 250ms ease;
+  padding: 5px 20px;
+  background: white;
+  box-shadow: 2px 2px 10px #a3a3a3, -2px -2px 10px #ffffff;
+  border: 1px solid black;
+  border-radius: 3px;
+  &:hover {
+    background: rgb(228, 218, 255);
+    text-decoration: underline;
+  }
 }
