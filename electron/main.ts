@@ -26,6 +26,7 @@ let quizJSONConfig: string = "";
 let parsedQuizJSONConfig: any = {};
 let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
+let isDialogWithFileImportOpen: boolean = false;
 // API server init:
 const APIServer = express();
 let runningAPIServer: any = null;
@@ -34,7 +35,7 @@ APIServer.use(cors());
 APIServer.use(express.json());
 APIServer.use(
   session({
-    secret: "AZé&Ddaz39032302ejczçEJO4I1dU2fàief3029##",
+    secret: "AZé&Ddaz39g0E32e302ejczçEJO4I1dU2fàief3029##",
     cookie: {
       httpOnly: true,
       sameSite: true,
@@ -61,7 +62,7 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
     } else {
       winWebContents.send("get-quiz-API-server-status", {
         type: "erreur",
-        message: `Authentification échoué, suspicion de triche sur le poste ${clientIP} !`,
+        message: `Authentification utilisateur échouée, suspicion de triche sur le poste ${clientIP} !`,
       });
       return false;
     }
@@ -70,15 +71,7 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
 
 const startQuizAPIServer = () => {
   const port = QuizAPIServerPort;
-  APIServer.get("*", (req: any, res: any) => {
-    res.redirect("/index.html");
-  });
-  APIServer.get("/", (req: any, res: any) => {
-    res.redirect("/index.html");
-  });
-  APIServer.get("/quiz", (req: any, res: any) => {
-    res.redirect("/index.html");
-  });
+
   APIServer.get("/is-quiz-started", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       res.send(allowClientQuizStart);
@@ -154,6 +147,9 @@ const startQuizAPIServer = () => {
       });
     }
   });
+  APIServer.get("*", (req: any, res: any) => {
+    res.redirect("/index.html");
+  });
   runningAPIServer = APIServer.listen(port, () => {
     winWebContents.send("get-quiz-API-server-status", {
       type: "info",
@@ -191,67 +187,80 @@ function createWindow() {
   });
 
   ipcMain.on("export-quiz-JSON", (event, JSONString: string) => {
-    dialog
-      .showSaveDialog({
-        filters: [{ name: "JSON file", extensions: ["json"] }],
-      })
-      .then((res: any) => {
-        if (res.filePath !== undefined && res.filePath !== "") {
-          let exportFilePath: string;
-          if (res.filePath.split(".").length === 1) {
-            exportFilePath = res.filePath + ".json";
-          } else {
-            if (
-              res.filePath.split(".")[res.filePath.split(".").length - 1] ===
-              "json"
-            ) {
-              exportFilePath = res.filePath;
-            } else {
+    if (!isDialogWithFileImportOpen) {
+      isDialogWithFileImportOpen = true;
+      dialog
+        .showSaveDialog({
+          filters: [{ name: "JSON file", extensions: ["json"] }],
+        })
+        .then((res: any) => {
+          if (res.filePath !== undefined && res.filePath !== "") {
+            let exportFilePath: string;
+            if (res.filePath.split(".").length === 1) {
               exportFilePath = res.filePath + ".json";
-            }
-          }
-          const fs = require("node:fs");
-          fs.writeFile(exportFilePath, JSONString, (err: any) => {
-            if (err) {
-              console.error(err);
             } else {
-              quizJSONConfig = JSONString;
-              parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
-              globalQuizFilePath = exportFilePath;
-              webContents.send(
-                "receive-global-quiz-file-path",
-                globalQuizFilePath
-              );
+              if (
+                res.filePath.split(".")[res.filePath.split(".").length - 1] ===
+                "json"
+              ) {
+                exportFilePath = res.filePath;
+              } else {
+                exportFilePath = res.filePath + ".json";
+              }
             }
-          });
-        }
-      })
-      .catch((err: any) => {
-        console.error(err);
-      });
+            const fs = require("node:fs");
+            fs.writeFile(exportFilePath, JSONString, (err: any) => {
+              if (err) {
+                console.error(err);
+              } else {
+                quizJSONConfig = JSONString;
+                parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
+                globalQuizFilePath = exportFilePath;
+                webContents.send(
+                  "receive-global-quiz-file-path",
+                  globalQuizFilePath
+                );
+              }
+            });
+          }
+          isDialogWithFileImportOpen = false;
+        })
+        .catch((err: any) => {
+          console.error(err);
+          isDialogWithFileImportOpen = false;
+        });
+    }
   });
 
   ipcMain.on("import-json-quiz-file", () => {
-    dialog
-      .showOpenDialog({
-        properties: ["openFile"],
-        filters: [{ name: "JSON file", extensions: ["json"] }],
-      })
-      .then((res: any) => {
-        if (res.filePaths.length === 1) {
-          globalQuizFilePath = res.filePaths[0];
-          const fs = require("node:fs");
-          fs.readFile(globalQuizFilePath, "utf8", (err: any, data: string) => {
-            if (err) {
-              console.error(err);
-            } else {
-              quizJSONConfig = data;
-              parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
-              webContents.send("receive-json-quiz-file", quizJSONConfig);
-            }
-          });
-        }
-      });
+    if (!isDialogWithFileImportOpen) {
+      isDialogWithFileImportOpen = true;
+      dialog
+        .showOpenDialog({
+          properties: ["openFile"],
+          filters: [{ name: "JSON file", extensions: ["json"] }],
+        })
+        .then((res: any) => {
+          if (res.filePaths.length === 1) {
+            globalQuizFilePath = res.filePaths[0];
+            const fs = require("node:fs");
+            fs.readFile(
+              globalQuizFilePath,
+              "utf8",
+              (err: any, data: string) => {
+                if (err) {
+                  console.error(err);
+                } else {
+                  quizJSONConfig = data;
+                  parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
+                  webContents.send("receive-json-quiz-file", quizJSONConfig);
+                }
+              }
+            );
+          }
+          isDialogWithFileImportOpen = false;
+        });
+    }
   });
 
   ipcMain.on("get-global-quiz-file-path", () => {

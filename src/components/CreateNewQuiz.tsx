@@ -21,7 +21,9 @@ const CreateNewQuiz = () => {
     }
 
     const handleQuizExport = () => {
-        window.api.exportQuizJSON(JSON.stringify(questionArray))
+        if (questionArray.length > 0) {
+            window.api.exportQuizJSON(JSON.stringify(questionArray))
+        }
     }
 
     const handleQuestionRemove = (e: any, key: number) => {
