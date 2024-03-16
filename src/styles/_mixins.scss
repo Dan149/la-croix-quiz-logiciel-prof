@@ -15,6 +15,7 @@
 
 @mixin BackButton {
   .back-btn {
+    z-index: 1000;
     position: absolute;
     top: 12px;
     transition: 500ms ease;

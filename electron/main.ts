@@ -47,6 +47,7 @@ APIServer.use(
 APIServer.use(express.static(path.join(process.env.VITE_PUBLIC, "/client")));
 
 const usersData: any = [];
+const votesData: any = []; // items: votes array (for each question)
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
@@ -57,7 +58,7 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
     const filteredSessionUsersData = usersData.filter(
       (user: any) => sessionId === user.sessionId
     );
-    if (filteredSessionUsersData.length === 1) {
+    if (filteredSessionUsersData.length >= 1) {
       return true;
     } else {
       winWebContents.send("get-quiz-API-server-status", {
@@ -69,9 +70,20 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
   }
 };
 
+const initVotesData = () => {
+  votesData.length = 0;
+  parsedQuizJSONConfig.forEach(() => {
+    votesData.push([0, 0, 0, 0]);
+  });
+};
+
+const registrerNewQuestionVote = (questionId: any, voteId: any) => {
+  votesData[questionId][voteId]++;
+};
+
 const startQuizAPIServer = () => {
   const port = QuizAPIServerPort;
-
+  initVotesData();
   APIServer.get("/is-quiz-started", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       res.send(allowClientQuizStart);
@@ -93,17 +105,16 @@ const startQuizAPIServer = () => {
       }
     }
   });
-  APIServer.post("/get-question-answer", (req: any, res: any) => {
-    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
-      const question = parsedQuizJSONConfig[req.body.questionId];
-      res.send(question.validAnswer);
-    }
-  });
   APIServer.post("/register-user-answer-validity", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       try {
         usersData[req.body.userId].answersValidity[req.body.questionId] =
-          req.body.answerValidity; // bool
+          parsedQuizJSONConfig[req.body.questionId].validAnswer ==
+          req.body.chosenAnswerIndex; // boolean
+        registrerNewQuestionVote(
+          req.body.questionId,
+          req.body.chosenAnswerIndex
+        );
         res.send("ok");
       } catch (err) {
         res.send("error");
@@ -314,7 +325,9 @@ function createWindow() {
   ipcMain.on("reset-users-data", () => {
     usersData.length = 0;
   });
-
+  ipcMain.on("get-votes-data", () => {
+    webContents.send("receive-votes-data", votesData);
+  });
   //
 
   if (VITE_DEV_SERVER_URL) {

@@ -10,8 +10,6 @@ const UserDataDisplay = () => {
         window.api.getUsersData((event: void, APIUsersData: any) => {
             setUsersData(APIUsersData);
         })
-        console.log(usersData);
-
     }
 
     const setFetchingUsersDataInterval = () => {
