@@ -93,15 +93,19 @@ const startQuizAPIServer = () => {
   });
   APIServer.post("/get-question", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
-      if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
-        const question = parsedQuizJSONConfig[req.body.questionId];
-        res.json({
-          question: question.question,
-          possibleAnswers: question.possibleAnswers,
-        });
-      } else {
-        usersData[req.body.userId].hasFinished = true;
-        res.send("end");
+      try {
+        if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
+          const question = parsedQuizJSONConfig[req.body.questionId];
+          res.json({
+            question: question.question,
+            possibleAnswers: question.possibleAnswers,
+          });
+        } else {
+          usersData[req.body.userId].hasFinished = true;
+          res.send("end");
+        }
+      } catch {
+        res.send("error");
       }
     }
   });
@@ -159,7 +163,7 @@ const startQuizAPIServer = () => {
     }
   });
   APIServer.get("*", (req: any, res: any) => {
-    res.redirect("/index.html");
+    res.redirect("/");
   });
   runningAPIServer = APIServer.listen(port, () => {
     winWebContents.send("get-quiz-API-server-status", {
