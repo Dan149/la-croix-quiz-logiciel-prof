@@ -23,15 +23,14 @@
     flex-wrap: wrap;
     gap: 4%;
     .user-card {
+      @include mixins.BasicComponentScrollbar;
       width: 30%;
       margin: 10px 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
+
+      overflow-y: scroll;
+      padding: 10px;
       gap: 10%;
       height: 50%;
-      padding: 10px;
       border-radius: 9px;
       background: linear-gradient(145deg, #cacaca, #f0f0f0);
       box-shadow: 6px 6px 12px #d0d0d0, -6px -6px 12px #f0f0f0;
@@ -55,7 +54,8 @@
         align-items: center;
         justify-content: center;
         flex-wrap: wrap;
-        width: 80%;
+        width: 100%;
+        padding: 10px 0;
         gap: 5%;
         .dot-item {
           margin-top: 3px;
