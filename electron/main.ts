@@ -184,7 +184,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  // win.setMenu(null);
+  win.setMenu(null);
   const webContents = win.webContents;
   winWebContents = win.webContents;
 

@@ -60,9 +60,9 @@ const VoteLikeDisplay = () => {
                   </div>
                   <h5>{questionsData[currentQuestionId].possibleAnswers[index]}</h5>
                 </div> : ""
-              )) : ""}
+              )) : "Chargement..."}
             </div>
-          </div> : ""}
+          </div> : "Chargement..."}
         </div>
       </div>
     ) : (
