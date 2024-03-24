@@ -23,6 +23,7 @@ const CreateNewQuiz = () => {
     const handleQuizExport = () => {
         if (questionArray.length > 0) {
             window.api.exportQuizJSON(JSON.stringify(questionArray))
+            window.api.addNewNotificationToPool({ title: "Quiz exporté !", message: "Quiz exporté avec succès." })
         }
     }
 
@@ -32,7 +33,7 @@ const CreateNewQuiz = () => {
     }
 
     useEffect(() => {
-        window.api.receiveGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
+        window.api.getGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
             setGlobalQuizFilePath(ipcGlobalQuizFilePath)
         })
     }, [])

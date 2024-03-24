@@ -27,6 +27,17 @@ let parsedQuizJSONConfig: any = {};
 let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
 let isDialogWithFileImportOpen: boolean = false;
+let sessionTime: any;
+// Notification handling:
+
+const createNewNotification = (title: string, message: string) => {
+  return {
+    title,
+    message,
+    time: new Date().toLocaleString(),
+  };
+};
+
 // API server init:
 const APIServer = express();
 let runningAPIServer: any = null;
@@ -82,6 +93,7 @@ const registrerNewQuestionVote = (questionId: any, voteId: any) => {
 };
 
 const startQuizAPIServer = () => {
+  sessionTime = Date.now();
   const port = QuizAPIServerPort;
   initVotesData();
   APIServer.get("/is-quiz-started", (req: any, res: any) => {
@@ -90,6 +102,9 @@ const startQuizAPIServer = () => {
     } else {
       res.send(false);
     }
+  });
+  APIServer.get("/session-time", (req: any, res: any) => {
+    res.json(sessionTime);
   });
   APIServer.post("/get-question", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
@@ -144,7 +159,7 @@ const startQuizAPIServer = () => {
           clientIP: req.socket.remoteAddress,
           sessionId: req.session.id,
         });
-        res.json({ userId: newUserId, serverStatus: "ok" });
+        res.json({ userId: newUserId, sessionTime, serverStatus: "ok" });
         winWebContents.send("get-quiz-API-server-status", {
           type: "info",
           message: `Utilisateur ${req.body.nom} ${req.body.prenom} ajouté sous l'identifiant ${newUserId}.`,
@@ -184,7 +199,7 @@ function createWindow() {
       preload: path.join(__dirname, "preload.js"),
     },
   });
-  win.setMenu(null);
+  // win.setMenu(null);
   const webContents = win.webContents;
   winWebContents = win.webContents;
 
@@ -332,6 +347,19 @@ function createWindow() {
   ipcMain.on("get-votes-data", () => {
     webContents.send("receive-votes-data", votesData);
   });
+  // Notification handling:
+
+  ipcMain.on("add-new-notification-to-pool", (event: any, params: any) => {
+    webContents.send(
+      "receive-notification",
+      createNewNotification(params.title, params.message)
+    );
+  });
+
+  ipcMain.on("call-current-notification-removal", () => {
+    webContents.send("remove-current-notification", null);
+  });
+
   //
 
   if (VITE_DEV_SERVER_URL) {

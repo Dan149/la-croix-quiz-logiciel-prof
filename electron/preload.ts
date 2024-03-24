@@ -23,11 +23,9 @@ contextBridge.exposeInMainWorld("api", {
     await ipcRenderer.on("receive-json-quiz-file", callback);
   },
   //
-  receiveGlobalQuizFilePath: async (callback: any) => {
-    await ipcRenderer.on("receive-global-quiz-file-path", callback);
-  },
-  getGlobalQuizFilePath: () => {
+  getGlobalQuizFilePath: (callback: any) => {
     ipcRenderer.send("get-global-quiz-file-path");
+    ipcRenderer.on("receive-global-quiz-file-path", callback);
   },
   //
   getQuizJSON: async (callback: any) => {
@@ -57,5 +55,18 @@ contextBridge.exposeInMainWorld("api", {
   getVotesData: (callback: any) => {
     ipcRenderer.send("get-votes-data");
     ipcRenderer.on("receive-votes-data", callback);
+  },
+  // Notifications:
+  addNewNotificationToPool: (notificationParams: any) => {
+    ipcRenderer.send("add-new-notification-to-pool", notificationParams);
+  },
+  listenToNewNotifications: (callback: any) => {
+    ipcRenderer.on("receive-notification", callback);
+  },
+  callForCurrentNotificationRemoval: () => {
+    ipcRenderer.send("call-current-notification-removal");
+  },
+  listenToCallForCurrentNotificationRemoval: (callback: any) => {
+    ipcRenderer.on("remove-current-notification", callback);
   },
 });

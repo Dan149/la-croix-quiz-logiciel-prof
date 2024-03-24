@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BackButton from "./BackButton";
 import QuizSession from "./QuizSession";
 
@@ -6,18 +6,24 @@ const ImportQuiz = () => {
     const [importedQuizJSONFile, setImportedQuizJSONFile] = useState([])
     const [globalQuizFilePath, setGlobalQuizFilePath] = useState("")
     const [startQuizSession, setStartQuizSession] = useState(false)
+    const isUseEffectInitialized = useRef(false)
+    const messageSent = useRef(false)
 
     useEffect(() => {
-        window.api.getQuizJSON(async (event: void, JSONFile: string) => {
-            await setImportedQuizJSONFile(JSON.parse(JSONFile))
-        })
+        if (!isUseEffectInitialized.current) {
+            isUseEffectInitialized.current = true
+            window.api.getQuizJSON((event: void, JSONFile: string) => {
+                setImportedQuizJSONFile(JSON.parse(JSONFile))
+            })
+            window.api.getGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
+                setGlobalQuizFilePath(ipcGlobalQuizFilePath)
+                if (!messageSent.current) {
+                    messageSent.current = true
+                    window.api.addNewNotificationToPool({ title: "Quiz importé !", message: `Le quiz a bien été importé du fichier ${ipcGlobalQuizFilePath}` })
+                }
+            })
+        }
     }, [])
-    useEffect(() => {
-        window.api.getGlobalQuizFilePath()
-        window.api.receiveGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
-            setGlobalQuizFilePath(ipcGlobalQuizFilePath)
-        })
-    }, [importedQuizJSONFile])
 
     const handleFileUse = () => {
         if (globalQuizFilePath !== "") {
