@@ -12,14 +12,18 @@ const ImportQuiz = () => {
     useEffect(() => {
         if (!isUseEffectInitialized.current) {
             isUseEffectInitialized.current = true
-            window.api.getQuizJSON((event: void, JSONFile: string) => {
-                setImportedQuizJSONFile(JSON.parse(JSONFile))
-            })
-            window.api.getGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
-                setGlobalQuizFilePath(ipcGlobalQuizFilePath)
+            window.api.getQuizJSON(async (event: void, JSONFile: string) => {
+                let filepath: string;
+                await setImportedQuizJSONFile(JSON.parse(JSONFile))
+                await window.api.getGlobalQuizFilePath(async (event: void, ipcGlobalQuizFilePath: string) => {
+                    await setGlobalQuizFilePath(ipcGlobalQuizFilePath)
+                    filepath = ipcGlobalQuizFilePath;
+                })
                 if (!messageSent.current) {
                     messageSent.current = true
-                    window.api.addNewNotificationToPool({ title: "Quiz importé !", message: `Le quiz a bien été importé du fichier ${ipcGlobalQuizFilePath}` })
+                    await setTimeout(() => {
+                        window.api.addNewNotificationToPool({ title: "Quiz importé !", message: `Le quiz a bien été importé du fichier ${filepath}.` })
+                    }, 1000)
                 }
             })
         }
@@ -42,7 +46,7 @@ const ImportQuiz = () => {
                             await setImportedQuizJSONFile(JSON.parse(JSONFile))
                         })
                     }}>Ouvrir un fichier</button>
-                    {globalQuizFilePath === "" ? "" : <button onClick={() => handleFileUse()}>Utiliser ce fichier</button>}
+                    {globalQuizFilePath == "" ? "" : <button onClick={() => handleFileUse()}>Utiliser ce fichier</button>}
                     <div className="file-selection">
                         {globalQuizFilePath === "" ? "" : <div className="filepath">{globalQuizFilePath}</div>}
                         <div className="questions-container">
