@@ -39,7 +39,7 @@ const NotificationManager = () => {
           isCurrentNotificationEmpty.current = true
         }
       })
-      window.api.addNewNotificationToPool({ title: "Bienvenue !", message: "Bienvenue sur le logiciel de création de quiz LaCroixQuiz, faites un tour !" })
+      // window.api.addNewNotificationToPool({ title: "Bienvenue !", message: "Bienvenue sur le logiciel de création de quiz LaCroixQuiz, faites un tour !" })
     }
   }, [isCurrentNotificationEmpty])
 

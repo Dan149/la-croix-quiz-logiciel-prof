@@ -23,7 +23,6 @@ const CreateNewQuiz = () => {
     const handleQuizExport = () => {
         if (questionArray.length > 0) {
             window.api.exportQuizJSON(JSON.stringify(questionArray))
-            window.api.addNewNotificationToPool({ title: "Quiz exporté !", message: "Quiz exporté avec succès." })
         }
     }
 
