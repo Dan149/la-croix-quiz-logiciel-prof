@@ -6,7 +6,7 @@
 
 ---
 
-### Fonctionnement:
+### Fonctionnement
 
 Le professeur lance le logiciel à partir de son ordinateur, les élèves peuvent dès le lancement du serveur par le biais du logiciel rejoindre la session de quiz en cours à partir d'un navigateur web sur l'addresse ip du professeur au port 3333:
 
@@ -16,7 +16,29 @@ Le professeur lance le logiciel à partir de son ordinateur, les élèves peuven
 
 ---
 
-### Captures d'écran:
+### Compilation
+
+Voici les étapes à suivre pour compiler soi-même le logiciel:
+
+1- Assurez-vous d'avoir installé <a href="https://npmjs.com">npm</a>.
+
+2- Clonez le projet sur votre machine: 
+
+- Par le terminal/cmd (git doit être installé):
+
+`git clone https://github.com/Dan149/la-croix-quiz-logiciel-prof`
+
+- ou téléchargez le zip sur la page d'accueil du projet.
+
+3- Depuis le terminal, dans le dossier du projet, installez les dépendences: `npm install`
+
+4- Pour finir, compilez: `npm run build`
+
+L'exécutable se trouvera dans le dossier _release_, dans le sous-dossier portant le nom de la version.
+
+---
+
+### Captures d'écran
 
 ![Copie d'écran_20240331_205917](https://github.com/Dan149/la-croix-quiz-logiciel-prof/assets/48863749/09df4d21-0000-43ee-a0fd-d5fc0aa5830c)
 ![Copie d'écran_20240331_210021](https://github.com/Dan149/la-croix-quiz-logiciel-prof/assets/48863749/69999c4a-740e-48ee-a4b6-4b4fca320f7d)
