@@ -97,6 +97,7 @@
 }
 
 @mixin BasicButton {
+  cursor: pointer;
   transition: 250ms ease;
   padding: 5px 20px;
   background: white;
