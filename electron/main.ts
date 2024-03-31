@@ -4,6 +4,7 @@ const { dialog } = require("electron");
 const express: any = require("express");
 const cors: any = require("cors");
 const session: any = require("express-session");
+const crypto: any = require("crypto");
 const fs = require("node:fs");
 
 // The built directory structure
@@ -29,11 +30,20 @@ let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
 let isDialogWithFileImportOpen: boolean = false;
 let sessionTime: any;
-let settings = {
-  allowDebug: true,
-  notifications: true,
-  darkMode: false,
-};
+let settings: any;
+
+fs.readFile(
+  `${process.env.VITE_PUBLIC}/config/staticSettingsFile.json`,
+  "utf8",
+  (err: any, data: string) => {
+    if (err) {
+      console.log(err);
+    } else {
+      settings = JSON.parse(data);
+      // console.log(settings);
+    }
+  }
+);
 // Notification handling:
 
 const createNewNotification = (title: string, message: string) => {
@@ -45,7 +55,7 @@ const createNewNotification = (title: string, message: string) => {
 };
 
 const sendNotification = (notification: any) => {
-  if (settings.notifications) {
+  if (settings.notifications.value === "true") {
     winWebContents.send("receive-notification", notification);
   }
 };
@@ -58,7 +68,7 @@ APIServer.use(cors());
 APIServer.use(express.json());
 APIServer.use(
   session({
-    secret: "AZé&Ddaz39g0E32e302ejczçEJO4I1dU2fàief3029##",
+    secret: crypto.randomUUID(),
     cookie: {
       httpOnly: true,
       sameSite: true,
@@ -203,29 +213,34 @@ const startQuizAPIServer = () => {
 
 // App settings handling:
 
-const enableSettings = () => {
+const enableUserSettings = () => {
   fs.readFile(
-    `${process.env.VITE_PUBLIC}/config/settings.json`,
+    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
     "utf8",
     (err: any, data: string) => {
       if (err) {
-        sendNotification(
-          createNewNotification(
-            "Erreur de paramétrage.",
-            "Erreur lors de la lecture du fichier de configuration."
-          )
-        );
-        if (settings.allowDebug) {
+        setTimeout(() => {
+          sendNotification(
+            createNewNotification(
+              "Erreur de paramétrage.",
+              "Erreur lors de la lecture du fichier de configuration."
+            )
+          );
+        }, 5000);
+        if (settings.allowDebug.value === "true") {
           console.log(err);
         }
       } else {
         settings = JSON.parse(data);
-        sendNotification(
-          createNewNotification(
-            "Paramètres importés.",
-            "Paramètres importés à partir du fichier de configuration."
-          )
-        );
+        // console.log(settings);
+        setTimeout(() => {
+          sendNotification(
+            createNewNotification(
+              "Paramètres importés.",
+              "Paramètres importés à partir du fichier de configuration."
+            )
+          );
+        }, 5000);
       }
     }
   );
@@ -233,7 +248,7 @@ const enableSettings = () => {
 
 const saveSettingsToConfFile = () => {
   fs.writeFile(
-    `${process.env.VITE_PUBLIC}/config/settings.json`,
+    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
     JSON.stringify(settings),
     (err: any) => {
       if (err) {
@@ -243,7 +258,7 @@ const saveSettingsToConfFile = () => {
             "Une erreur est survenue lors de la sauvegarde des paramètres."
           )
         );
-        if (settings.allowDebug) {
+        if (settings.allowDebug.value === "true") {
           console.log(err);
         }
       }
@@ -262,12 +277,15 @@ function createWindow() {
     },
   });
 
-  if (!settings.allowDebug) win.setMenu(null);
-
   const webContents = win.webContents;
   winWebContents = win.webContents; // for outside functions.
 
-  enableSettings(); // enable settings from json settings file (../public/config/settings.json)
+  enableUserSettings(); // enable settings from json user settings file (../public/config/userSettings.json)
+
+  setTimeout(() => {
+    if (settings.allowDebug.value === "false") win.setMenu(null);
+  }, 1000);
+
   ipcMain.on("get-app-version", async () => {
     webContents.send("receive-app-version", app.getVersion());
   });
@@ -435,6 +453,17 @@ function createWindow() {
 
   ipcMain.on("call-current-notification-removal", () => {
     webContents.send("remove-current-notification", null);
+  });
+
+  // Settings handling:
+
+  ipcMain.on("get-settings-string", () => {
+    webContents.send("receive-settings-string", JSON.stringify(settings));
+  });
+
+  ipcMain.on("rewrite-settings", (event: any, settingsString: string) => {
+    settings = JSON.parse(settingsString);
+    saveSettingsToConfFile();
   });
 
   //

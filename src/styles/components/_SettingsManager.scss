@@ -1,0 +1,41 @@
+@use "../mixins";
+
+.settings-manager-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 60vh;
+  .settings-manager {
+    height: 100%;
+    width: 100%;
+    @include mixins.BackButton;
+    border-radius: 19px;
+    background: #e0e0e0;
+    box-shadow: 11px 11px 22px #cacaca, -11px -11px 22px #f6f6f6;
+    display: grid;
+    grid-template-rows: 20% 65% 25%;
+
+    .settings-list {
+      @include mixins.BasicComponentScrollbar;
+      overflow-y: scroll;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 1rem;
+      li {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 80%;
+      }
+    }
+  }
+}
+
+// Button to display the component:
+
+.show-settings-btn {
+  @include mixins.BasicButton;
+}

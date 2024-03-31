@@ -1,4 +1,5 @@
 import { useState } from "react";
+import SettingsManager from "./SettingsManager";
 
 const SessionPopups = () => {
   return (
@@ -18,6 +19,7 @@ const SessionPopups = () => {
           <h3>Importer une session</h3>
         </div>
       </div>
+      <SettingsManager />
     </div>
   );
 };

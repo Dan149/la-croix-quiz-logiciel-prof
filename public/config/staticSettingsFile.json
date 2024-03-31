@@ -1,0 +1,5 @@
+{
+  "notifications": { "value": "true", "name": "Notifications" },
+  "darkMode": { "value": "false", "name": "Mode Nuit" },
+  "allowDebug": { "value": "false", "name": "Débogage" }
+}
