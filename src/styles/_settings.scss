@@ -14,3 +14,6 @@ body {
 .btn {
   @include mixins.BasicButton;
 }
+button {
+  cursor: pointer;
+}
