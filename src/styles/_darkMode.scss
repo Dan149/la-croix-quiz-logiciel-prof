@@ -1,0 +1,38 @@
+body.dark {
+  background: rgb(29, 29, 29);
+  color: ghostwhite;
+  #root {
+    button {
+      background: rgb(61, 61, 61);
+      box-shadow: none;
+      border: 1px solid gray;
+      color: ghostwhite;
+    }
+    header {
+      background: rgb(61, 61, 61);
+      h2 {
+        color: skyblue;
+      }
+    }
+
+    footer {
+      background: rgb(61, 61, 61);
+      color: white;
+    }
+
+    main {
+      .session-popups .session-popups-container .popup {
+        background: rgb(61, 61, 61);
+      }
+      .back-btn {
+        background: ghostwhite;
+        &:hover {
+          background: rgb(255, 180, 180);
+        }
+      }
+      .quiz-api-server-logs {
+        color: black;
+      }
+    }
+  }
+}

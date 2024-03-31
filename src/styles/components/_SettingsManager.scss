@@ -26,11 +26,17 @@
       flex-direction: column;
       gap: 1rem;
       li {
+        position: relative;
         display: grid;
         grid-template-columns: 1fr 1fr;
         width: 80%;
       }
     }
+  }
+
+  button {
+    transform: translateY(-200%);
+    @include mixins.BasicButton;
   }
 }
 

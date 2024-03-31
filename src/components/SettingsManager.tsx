@@ -3,6 +3,7 @@ import ToggleSettingBox from "./ToggleSettingBox";
 
 const SettingsManager = () => {
   const [showSettingsManager, setShowSettingsManager] = useState(false)
+  const [hasSettingsConfigBeenChanged, setHasSettingsConfigBeenChanged] = useState(false)
   const [settingsList, setSettingsList] = useState<any>({})
   const isUseEffectInitialized = useRef(false)
 
@@ -12,10 +13,15 @@ const SettingsManager = () => {
     })
   }
 
-
+  const handleSettingsSave = () => {
+    window.api.saveNewSettings(JSON.stringify(settingsList))
+    setHasSettingsConfigBeenChanged(false)
+    isUseEffectInitialized.current = false
+  }
 
   useEffect(() => {
     if (!isUseEffectInitialized.current) {
+      isUseEffectInitialized.current = true
       importSettingsList()
     }
   }, [])
@@ -32,9 +38,16 @@ const SettingsManager = () => {
           <ul className="settings-list">
             {Object.keys(settingsList).map((key: string) => (
               <li key={key}>{settingsList[key].name} <span onClick={async () => {
+                setHasSettingsConfigBeenChanged(true)
                 const newSettings = { ...settingsList }
+                let newValue: string;
+                if (newSettings[key].value == "false") {
+                  newValue = "true"
+                } else {
+                  newValue = "false"
+                }
                 newSettings[key] = {
-                  value: `${!newSettings[key].value}`, // issue here
+                  value: newValue, // issue here
                   name: settingsList[key].name
                 }
                 setSettingsList(newSettings)
@@ -44,6 +57,7 @@ const SettingsManager = () => {
             ))}
           </ul>
         </div>
+        {hasSettingsConfigBeenChanged ? <button onClick={() => handleSettingsSave()}>Sauvegarder les nouveaux paramètres</button> : ""}
       </div>
 
       :

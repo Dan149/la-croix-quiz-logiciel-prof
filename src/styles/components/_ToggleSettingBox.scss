@@ -1,12 +1,11 @@
 .toggle-box {
-  position: relative;
+  position: absolute;
+  right: 0;
   width: 40px;
   height: 20px;
   border-radius: 11px;
   background: #e0e0e0;
   box-shadow: inset 8px 8px 8px #bababa, inset -8px -8px 8px #ffffff;
-  display: block;
-  margin: 0 auto;
   cursor: pointer;
   .toggle-dot {
     position: absolute;
@@ -14,11 +13,31 @@
     height: 20px;
     border-radius: 1000px;
     background: linear-gradient(0deg, rgb(190, 190, 190), rgb(110, 110, 110));
-    transition: 250ms ease;
+    animation: toggleFalseAnim 125ms linear forwards;
   }
   &.true {
+    background: #adffbb;
+    box-shadow: inset 8px 8px 8px #93d99f, inset -8px -8px 8px #c1ffd3;
     .toggle-dot {
-      right: 0;
+      animation: toggleTrueAnim 125ms linear forwards;
     }
+  }
+}
+
+@keyframes toggleTrueAnim {
+  from {
+    right: 50%;
+  }
+  to {
+    right: 0;
+  }
+}
+
+@keyframes toggleFalseAnim {
+  from {
+    right: 0;
+  }
+  to {
+    right: 50%;
   }
 }

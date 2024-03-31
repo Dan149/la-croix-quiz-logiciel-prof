@@ -11,8 +11,8 @@ const QuizSession = (props: any) => { // filepath
 
   const handleQuizAPIServerStart = async () => {
     await setQuizAPIServerEvents([])
+    await setIsAPIServerOn(true);
     window.api.startQuizAPIServer();
-    setIsAPIServerOn(true);
   }
   const handleQuizAPIServerStop = () => {
     window.api.stopQuizAPIServer();

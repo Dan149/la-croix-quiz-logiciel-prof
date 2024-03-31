@@ -39,9 +39,9 @@ const CreateNewQuiz = () => {
 
     return (
         <div className="create-quiz-container">
-            <BackButton />
             {globalQuizFilePath !== "" ? <QuizSession globalQuizFilePath={globalQuizFilePath} /> : (
                 <>
+                    <BackButton />
                     <h2>
                         Création du quiz:
                     </h2>

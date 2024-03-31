@@ -21,6 +21,8 @@ process.env.VITE_PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
 
+const staticSettingsConfig = require(`${process.env.VITE_PUBLIC}/config/staticSettingsConfig`);
+
 let win: BrowserWindow | null;
 let sessionType: string = "";
 let globalQuizFilePath: string = "";
@@ -30,20 +32,8 @@ let QuizAPIServerPort: number = 3333;
 let winWebContents: any = null;
 let isDialogWithFileImportOpen: boolean = false;
 let sessionTime: any;
-let settings: any;
+let settings: any = staticSettingsConfig;
 
-fs.readFile(
-  `${process.env.VITE_PUBLIC}/config/staticSettingsFile.json`,
-  "utf8",
-  (err: any, data: string) => {
-    if (err) {
-      console.log(err);
-    } else {
-      settings = JSON.parse(data);
-      // console.log(settings);
-    }
-  }
-);
 // Notification handling:
 
 const createNewNotification = (title: string, message: string) => {
@@ -213,37 +203,81 @@ const startQuizAPIServer = () => {
 
 // App settings handling:
 
-const enableUserSettings = () => {
-  fs.readFile(
+const createUserSettingsFile = () => {
+  fs.writeFile(
     `${process.env.VITE_PUBLIC}/config/userSettings.json`,
-    "utf8",
-    (err: any, data: string) => {
+    JSON.stringify(settings),
+    (err: any) => {
       if (err) {
+        sendNotification(
+          createNewNotification(
+            "Erreur lors de la création du fichier de configuration",
+            "Une erreur est survenue lors de la création du fichier de configuration utilisateur."
+          )
+        );
+        if (settings.allowDebug.value === "true") {
+          console.log(err);
+        }
+      }
+    }
+  );
+};
+
+const enableUserSettings = () => {
+  let fileExists: boolean = true;
+  fs.stat(
+    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
+    (err: any, stats: any) => {
+      if (err == null) {
+        fileExists = true;
+      } else if (err.code === "ENOENT") {
+        fileExists = false;
         setTimeout(() => {
           sendNotification(
             createNewNotification(
               "Erreur de paramétrage.",
-              "Erreur lors de la lecture du fichier de configuration."
+              "Le fichier de configuration utilisateur n'existe pas, utilisation de la configuration par défaut."
             )
           );
-        }, 5000);
-        if (settings.allowDebug.value === "true") {
-          console.log(err);
-        }
-      } else {
-        settings = JSON.parse(data);
-        // console.log(settings);
-        setTimeout(() => {
-          sendNotification(
-            createNewNotification(
-              "Paramètres importés.",
-              "Paramètres importés à partir du fichier de configuration."
-            )
-          );
-        }, 5000);
+        }, 15000);
       }
     }
   );
+  if (fileExists) {
+    fs.readFile(
+      `${process.env.VITE_PUBLIC}/config/userSettings.json`,
+      "utf8",
+      (err: any, data: string) => {
+        if (err) {
+          setTimeout(() => {
+            sendNotification(
+              createNewNotification(
+                "Erreur de paramétrage.",
+                "Erreur lors de la lecture du fichier de configuration utilisateur, recréation du fichier..."
+              )
+            );
+          }, 5000);
+          if (settings.allowDebug.value === "true") {
+            console.log(err);
+          }
+          createUserSettingsFile();
+        } else {
+          settings = JSON.parse(data);
+          // console.log(settings);
+          setTimeout(() => {
+            sendNotification(
+              createNewNotification(
+                "Paramètres importés.",
+                "Paramètres importés à partir du fichier de configuration."
+              )
+            );
+          }, 5000);
+        }
+      }
+    );
+  } else {
+    createUserSettingsFile();
+  }
 };
 
 const saveSettingsToConfFile = () => {
@@ -266,7 +300,7 @@ const saveSettingsToConfFile = () => {
   );
 };
 
-function createWindow() {
+async function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "/img/favicon.png"),
     title: "La Croix Quiz",

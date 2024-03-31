@@ -74,4 +74,7 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("get-settings-string");
     ipcRenderer.on("receive-settings-string", callback);
   },
+  saveNewSettings: (newSettings: string) => {
+    ipcRenderer.send("rewrite-settings", newSettings);
+  },
 });

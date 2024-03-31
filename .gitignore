@@ -24,3 +24,7 @@ release
 *.njsproj
 *.sln
 *.sw?
+
+# user data:
+
+public/config/userSettings.json
