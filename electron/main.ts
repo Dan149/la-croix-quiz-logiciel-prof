@@ -20,6 +20,7 @@ process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
+const userDataPath: any = app.getPath("userData");
 
 const staticSettingsConfig = require(`${process.env.VITE_PUBLIC}/config/staticSettingsConfig`);
 
@@ -205,7 +206,7 @@ const startQuizAPIServer = () => {
 
 const createUserSettingsFile = () => {
   fs.writeFile(
-    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
+    `${userDataPath}/userSettings.json`,
     JSON.stringify(settings),
     (err: any) => {
       if (err) {
@@ -226,8 +227,8 @@ const createUserSettingsFile = () => {
 const enableUserSettings = () => {
   let fileExists: boolean = true;
   fs.stat(
-    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
-    (err: any, stats: any) => {
+    `${userDataPath}/userSettings.json`,
+    (err: any) => {
       if (err == null) {
         fileExists = true;
       } else if (err.code === "ENOENT") {
@@ -245,7 +246,7 @@ const enableUserSettings = () => {
   );
   if (fileExists) {
     fs.readFile(
-      `${process.env.VITE_PUBLIC}/config/userSettings.json`,
+      `${userDataPath}/userSettings.json`,
       "utf8",
       (err: any, data: string) => {
         if (err) {
@@ -282,7 +283,7 @@ const enableUserSettings = () => {
 
 const saveSettingsToConfFile = () => {
   fs.writeFile(
-    `${process.env.VITE_PUBLIC}/config/userSettings.json`,
+    `${userDataPath}/userSettings.json`,
     JSON.stringify(settings),
     (err: any) => {
       if (err) {
