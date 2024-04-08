@@ -6,6 +6,18 @@ const cors: any = require("cors");
 const session: any = require("express-session");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
+const csvWriter = require("csv-writer");
+
+type UserData = { // Type of the elements of the usersData array.
+  nom: string,
+  prenom: string,
+  id: number,
+  answersValidity: Array<boolean>, // array of bool
+  hasFinished: boolean, // quiz finished or not
+  // security:
+  clientIP: string,
+  sessionId: string,
+}
 
 // The built directory structure
 //
@@ -52,6 +64,7 @@ const sendNotification = (notification: any) => {
 };
 
 // API server init:
+
 const APIServer = express();
 let runningAPIServer: any = null;
 let allowClientQuizStart = false;
@@ -70,7 +83,7 @@ APIServer.use(
 );
 APIServer.use(express.static(path.join(process.env.VITE_PUBLIC, "/client")));
 
-const usersData: any = [];
+const usersData: UserData[] = [];
 const votesData: any = []; // items: votes array (for each question)
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
@@ -301,6 +314,53 @@ const saveSettingsToConfFile = () => {
   );
 };
 
+// Save user data to CSV:
+
+const exportUsersDataToCSV = () => {
+  const homePath = `${app.getPath("home")}/la-croix-quiz`;
+  const filteredUsersData: any = [];
+  usersData.forEach((user) => {
+    const validOnes: number = user.answersValidity.filter(Boolean).length
+    filteredUsersData.push({
+      nom: user.nom,
+      prenom: user.prenom,
+      note: `${validOnes}/${user.answersValidity.length}`
+    })
+  })
+
+  fs.access(
+    homePath,
+    (err: any) => {
+      if (err) {
+        // RAAAAAAAAAHHHHHH
+        fs.mkdir(homePath, (err: any) => {
+          console.log(err);
+        })
+      }
+    }
+  );
+
+  const date = new Date();
+  const path = `${homePath}/donnees-eleve-${date.toLocaleString().replace(/[\/,\ ]/g, "-")}.csv` // Replaces all "/" and spaces by "-".
+  const writer = csvWriter.createObjectCsvWriter({
+    path,
+    header: [
+      { id: "nom", title: "Nom" },
+      { id: "prenom", title: "Prénom" },
+      { id: "note", title: "Note" }
+    ]
+  });
+  writer.writeRecords(filteredUsersData).then((out: void, err: any) => {
+    if (!err) {
+      sendNotification(
+        createNewNotification("Données élèves exportées", `Les données ont été exportées dans le fichier: ${path}.`)
+      );
+    }
+  })
+}
+
+// WINDOW:
+
 async function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "/img/favicon.png"),
@@ -429,7 +489,9 @@ async function createWindow() {
   ipcMain.on("get-global-quiz-file-path", () => {
     webContents.send("receive-global-quiz-file-path", globalQuizFilePath);
   });
-
+  ipcMain.on("reset-global-quiz-file-path", () => {
+    globalQuizFilePath = "";
+  });
   ipcMain.on("get-json-quiz-file", () => {
     webContents.send("receive-json-quiz-file", quizJSONConfig);
   });
@@ -500,6 +562,14 @@ async function createWindow() {
     settings = JSON.parse(settingsString);
     saveSettingsToConfFile();
   });
+
+  // CSV users data export:
+
+  ipcMain.on("export-users-data-to-csv", () => {
+    if (usersData.length > 0) {
+      exportUsersDataToCSV();
+    }
+  })
 
   //
 

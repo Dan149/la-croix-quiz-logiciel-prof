@@ -14,7 +14,8 @@ const QuizSession = (props: any) => { // filepath
     await setIsAPIServerOn(true);
     window.api.startQuizAPIServer();
   }
-  const handleQuizAPIServerStop = () => {
+  const handleQuizAPIServerStop = async () => {
+    await window.api.pleaseDanielExportUsersDataToCSV();
     window.api.stopQuizAPIServer();
     setIsAPIServerOn(false);
     setIsQuizStartAllowed(false);

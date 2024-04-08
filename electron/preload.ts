@@ -1,36 +1,40 @@
 import { contextBridge, ipcRenderer } from "electron";
 
-// --------- Expose some API to the Renderer process ---------
+// Bridge between front and back end of the app. (API)
+
 contextBridge.exposeInMainWorld("api", {
-  getAppVersion: async (callback: any) => {
+  getAppVersion: (callback: any) => {
     ipcRenderer.send("get-app-version");
-    await ipcRenderer.on("receive-app-version", callback);
+    ipcRenderer.on("receive-app-version", callback);
   },
   //
   setSessionType: (sessionType: string) => {
     ipcRenderer.send("set-session-type", sessionType);
   },
-  getSessionType: async (callback: any) => {
+  getSessionType: (callback: any) => {
     ipcRenderer.send("get-session-type");
-    await ipcRenderer.on("receive-session-type", callback);
+    ipcRenderer.on("receive-session-type", callback);
   },
   //
   exportQuizJSON: (JSONString: string) => {
     ipcRenderer.send("export-quiz-JSON", JSONString);
   },
-  importQuizJSON: async (callback: any) => {
+  importQuizJSON: (callback: any) => {
     ipcRenderer.send("import-json-quiz-file");
-    await ipcRenderer.on("receive-json-quiz-file", callback);
+    ipcRenderer.on("receive-json-quiz-file", callback);
   },
   //
   getGlobalQuizFilePath: (callback: any) => {
     ipcRenderer.send("get-global-quiz-file-path");
     ipcRenderer.on("receive-global-quiz-file-path", callback);
   },
+  resetGlobalQuizFilePath: () => {
+    ipcRenderer.send("reset-global-quiz-file-path");
+  },
   //
-  getQuizJSON: async (callback: any) => {
+  getQuizJSON: (callback: any) => {
     ipcRenderer.send("get-json-quiz-file");
-    await ipcRenderer.on("receive-json-quiz-file", callback);
+    ipcRenderer.on("receive-json-quiz-file", callback);
   },
   // QuizAPIServer => express.js
   startQuizAPIServer: () => {
@@ -77,4 +81,8 @@ contextBridge.exposeInMainWorld("api", {
   saveNewSettings: (newSettings: string) => {
     ipcRenderer.send("rewrite-settings", newSettings);
   },
+  // CSV export:
+  pleaseDanielExportUsersDataToCSV: () => { // having fun ;)
+    ipcRenderer.send("export-users-data-to-csv");
+  }
 });

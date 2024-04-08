@@ -3,7 +3,7 @@
   "author": "Daniel Falkov",
   "description": "Logiciel de quiz scolaire proposé par Saint Jean & La Croix, permettant de lancer un quiz joignable sur un réseau local par les élèves depuis n'importe quel navigateur web.",
   "private": true,
-  "version": "0.0.4",
+  "version": "0.0.5",
   "scripts": {
     "dev": "vite",
     "build": "vite build && electron-builder",
@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "csv-writer": "^1.6.0",
     "express": "^4.18.2",
     "express-session": "^1.18.0",
     "react": "^18.2.0",

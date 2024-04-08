@@ -8,9 +8,11 @@
   border-radius: 10px;
   border: 1px solid black;
   z-index: 1500;
+
   .vote-like-display-container {
     position: relative;
     height: 100%;
+
     .arrow-left {
       position: absolute;
       left: 1rem;
@@ -23,6 +25,7 @@
       transform: scale(0.8);
       transition: 500ms ease;
       cursor: pointer;
+
       &:hover {
         transform: scale(0.9);
       }
@@ -40,10 +43,12 @@
       transform: scale(0.8);
       transition: 500ms ease;
       cursor: pointer;
+
       &:hover {
         transform: scale(0.9);
       }
     }
+
     .question-votes-view {
       height: 100%;
       display: flex;
@@ -51,21 +56,25 @@
       align-items: center;
       flex-direction: column;
       gap: 2rem;
+
       h3 {
         text-align: center;
       }
+
       .question-votes-container {
         width: 80%;
         display: flex;
         align-items: center;
         justify-content: center;
         gap: 2%;
+
         .votes-card {
           width: 20%;
           height: 100%;
           display: grid;
           grid-template-rows: 200px 20px;
           gap: 1rem;
+
           .amount-holder {
             position: relative;
             height: 200px;
@@ -75,6 +84,7 @@
             border-radius: 5px;
             background: #e0e0e0;
             box-shadow: inset 5px 5px 8px #bebebe, inset -5px -5px 8px #ffffff;
+
             .amount {
               position: absolute;
               bottom: 0;
@@ -85,6 +95,7 @@
               background: #a42828;
               box-shadow: inset 5px 5px 8px #8b2222, inset -5px -5px 8px #bd2e2e;
               transition: 500ms ease;
+
               .number {
                 color: white;
                 text-align: center;
@@ -95,9 +106,26 @@
               }
             }
           }
+
           h5 {
             text-align: center;
-            font-weight: normal;
+            font-weight: bold;
+
+            &#n0 {
+              color: rgb(51, 133, 43);
+            }
+
+            &#n1 {
+              color: rgb(195, 65, 55);
+            }
+
+            &#n2 {
+              color: rgb(55, 80, 195);
+            }
+
+            &#n3 {
+              color: rgb(214, 228, 67);
+            }
           }
         }
       }

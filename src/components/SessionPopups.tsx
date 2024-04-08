@@ -1,4 +1,3 @@
-import { useState } from "react";
 import SettingsManager from "./SettingsManager";
 
 const SessionPopups = () => {
@@ -7,6 +6,7 @@ const SessionPopups = () => {
       <h2>Choisissez la méthode de création du quiz:</h2>
       <div className="session-popups-container">
         <div className="popup" onClick={() => {
+          window.api.resetGlobalQuizFilePath()
           window.api.setSessionType("create")
         }}>
           <img src="./img/new-session.svg" alt="créer une session" draggable="false" />

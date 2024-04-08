@@ -58,7 +58,7 @@ const VoteLikeDisplay = () => {
                   <div className="amount-holder">
                     <div className="amount" style={questionsData[currentQuestionId].validAnswer == index ? { background: "#31c464", boxShadow: "inset 5px 5px 8px #25934b, inset -5px -5px 8px #3df57d", height: `${(votes / usersData.length) * 100}%` } : { height: `${(votes / usersData.length) * 100}%` }}> <span className="number">{votes !== 0 ? votes : ""}</span> </div>
                   </div>
-                  <h5>{questionsData[currentQuestionId].possibleAnswers[index]}</h5>
+                  <h5 id={`n${index}`}>{questionsData[currentQuestionId].possibleAnswers[index]}</h5>
                 </div> : ""
               )) : "Chargement..."}
             </div>
