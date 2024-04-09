@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, session, webContents } from "electron";
+import { app, BrowserWindow, ipcMain, session } from "electron";
 import path from "node:path";
 const { dialog } = require("electron");
 const express: any = require("express");
@@ -7,17 +7,21 @@ const session: any = require("express-session");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
 const csvWriter = require("csv-writer");
+const { networkInterfaces } = require("os");
 
-type UserData = { // Type of the elements of the usersData array.
-  nom: string,
-  prenom: string,
-  id: number,
-  answersValidity: Array<boolean>, // array of bool
-  hasFinished: boolean, // quiz finished or not
+const nets: any = networkInterfaces();
+
+type UserData = {
+  // Type of the elements of the usersData array.
+  nom: string;
+  prenom: string;
+  id: number;
+  answersValidity: Array<boolean>; // array of bool
+  hasFinished: boolean; // quiz finished or not
   // security:
-  clientIP: string,
-  sessionId: string,
-}
+  clientIP: string;
+  sessionId: string;
+};
 
 // The built directory structure
 //
@@ -46,6 +50,28 @@ let winWebContents: any = null;
 let isDialogWithFileImportOpen: boolean = false;
 let sessionTime: any;
 let settings: any = staticSettingsConfig;
+
+// Find IP addresses of the server:
+
+const findIPaddresses = () => {
+  const availableIPs: any = {};
+
+  for (const name of Object.keys(nets)) {
+    for (const net of nets[name]) {
+      // Skip over non-IPv4 and internal (i.e. 127.0.0.1) addresses
+      const familyV4Value = typeof net.family === "string" ? "IPv4" : 4; // 'IPv4' is in Node <= 17, from 18 it's a number 4 or 6
+      if (net.family === familyV4Value && !net.internal) {
+        if (!availableIPs[name]) {
+          availableIPs[name] = [];
+        }
+        availableIPs[name].push(net.address);
+      }
+    }
+  }
+  // console.log(availableIPs);
+
+  return availableIPs;
+};
 
 // Notification handling:
 
@@ -239,24 +265,21 @@ const createUserSettingsFile = () => {
 
 const enableUserSettings = () => {
   let fileExists: boolean = true;
-  fs.stat(
-    `${userDataPath}/userSettings.json`,
-    (err: any) => {
-      if (err == null) {
-        fileExists = true;
-      } else if (err.code === "ENOENT") {
-        fileExists = false;
-        setTimeout(() => {
-          sendNotification(
-            createNewNotification(
-              "Erreur de paramétrage.",
-              "Le fichier de configuration utilisateur n'existe pas, utilisation de la configuration par défaut."
-            )
-          );
-        }, 15000);
-      }
+  fs.stat(`${userDataPath}/userSettings.json`, (err: any) => {
+    if (err == null) {
+      fileExists = true;
+    } else if (err.code === "ENOENT") {
+      fileExists = false;
+      setTimeout(() => {
+        sendNotification(
+          createNewNotification(
+            "Erreur de paramétrage.",
+            "Le fichier de configuration utilisateur n'existe pas, utilisation de la configuration par défaut."
+          )
+        );
+      }, 15000);
     }
-  );
+  });
   if (fileExists) {
     fs.readFile(
       `${userDataPath}/userSettings.json`,
@@ -320,44 +343,46 @@ const exportUsersDataToCSV = () => {
   const homePath = `${app.getPath("home")}/la-croix-quiz`;
   const filteredUsersData: any = [];
   usersData.forEach((user) => {
-    const validOnes: number = user.answersValidity.filter(Boolean).length
+    const validOnes: number = user.answersValidity.filter(Boolean).length;
     filteredUsersData.push({
       nom: user.nom,
       prenom: user.prenom,
-      note: `${validOnes}/${user.answersValidity.length}`
-    })
-  })
+      note: `${validOnes}/${user.answersValidity.length}`,
+    });
+  });
 
-  fs.access(
-    homePath,
-    (err: any) => {
-      if (err) {
-        // RAAAAAAAAAHHHHHH
-        fs.mkdir(homePath, (err: any) => {
-          console.log(err);
-        })
-      }
+  fs.access(homePath, (err: any) => {
+    if (err) {
+      // RAAAAAAAAAHHHHHH
+      fs.mkdir(homePath, (err: any) => {
+        console.log(err);
+      });
     }
-  );
+  });
 
   const date = new Date();
-  const path = `${homePath}/donnees-eleve-${date.toLocaleString().replace(/[\/,\ ]/g, "-")}.csv` // Replaces all "/" and spaces by "-".
+  const path = `${homePath}/donnees-eleve-${date
+    .toLocaleString()
+    .replace(/[\/,\ ]/g, "-")}.csv`; // Replaces all "/" and spaces by "-".
   const writer = csvWriter.createObjectCsvWriter({
     path,
     header: [
       { id: "nom", title: "Nom" },
       { id: "prenom", title: "Prénom" },
-      { id: "note", title: "Note" }
-    ]
+      { id: "note", title: "Note" },
+    ],
   });
   writer.writeRecords(filteredUsersData).then((out: void, err: any) => {
     if (!err) {
       sendNotification(
-        createNewNotification("Données élèves exportées", `Les données ont été exportées dans le fichier: ${path}.`)
+        createNewNotification(
+          "Données élèves exportées",
+          `Les données ont été exportées dans le fichier: ${path}.`
+        )
       );
     }
-  })
-}
+  });
+};
 
 // WINDOW:
 
@@ -569,7 +594,13 @@ async function createWindow() {
     if (usersData.length > 0) {
       exportUsersDataToCSV();
     }
-  })
+  });
+
+  // Get available V4 server IPs:
+
+  ipcMain.on("get-available-IPs", () => {
+    webContents.send("receive-available-IPs", findIPaddresses());
+  });
 
   //
 

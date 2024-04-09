@@ -82,7 +82,13 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("rewrite-settings", newSettings);
   },
   // CSV export:
-  pleaseDanielExportUsersDataToCSV: () => { // having fun ;)
+  pleaseDanielExportUsersDataToCSV: () => {
+    // having fun ;)
     ipcRenderer.send("export-users-data-to-csv");
-  }
+  },
+  // get available v4 server IPs:
+  getAvailableIPs: (callback: any) => {
+    ipcRenderer.send("get-available-IPs");
+    ipcRenderer.on("receive-available-IPs", callback);
+  },
 });

@@ -1,0 +1,67 @@
+.server-ip-display {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  bottom: 2%;
+  right: 2%;
+  background: rgba(255, 255, 255, 0.788);
+  border-radius: 10px;
+  border: 1px solid black;
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  gap: 2rem;
+  .infos {
+    display: block;
+    margin: 0 auto;
+    p {
+      width: 60%;
+      display: block;
+      margin: 0 auto;
+      hr {
+        margin: 10px;
+      }
+    }
+  }
+  .ip-addr-container {
+    width: 600px;
+    @media screen and (max-width: 850px) {
+      width: 80%;
+      .interface-and-ip .ip-addr {
+        font-size: 0.8rem;
+      }
+    }
+    .interface-and-ip {
+      display: grid;
+      grid-template-columns: 40% 60%;
+      border-radius: 5px;
+      box-shadow: 1px 2px 2px gray;
+      select {
+        border: none;
+        border-radius: 5px 0 0 5px;
+        font-size: 0.9rem;
+        padding: 5px;
+        transition: 500ms ease;
+        cursor: pointer;
+        &:hover {
+          background: rgb(206, 217, 255);
+        }
+      }
+      .ip-addr {
+        background: rgb(194, 194, 194);
+        border-radius: 0 5px 5px 0;
+        padding: 10px 20px;
+        font-family: "Courier New", Courier, monospace;
+        user-select: text;
+      }
+    }
+  }
+}
+
+.server-ip-btn {
+  display: block;
+  margin: 10px auto;
+}
