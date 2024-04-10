@@ -7,7 +7,7 @@ const session: any = require("express-session");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
 const csvWriter = require("csv-writer");
-const CsvToJson = require('convert-csv-to-json');
+const csvToObj = require('csv-to-js-parser').csvToObj;
 const { networkInterfaces } = require("os");
 
 const nets: any = networkInterfaces();
@@ -51,14 +51,16 @@ let winWebContents: any = null; // webContents to use outside the window declara
 let isDialogWithFileImportOpen: boolean = false; // Bool to avoid opening multiple file managers in the same time.
 let sessionTime: any; // The time on which the session was started, used to deauthenticate the clients of older sessions.
 let settings: any = staticSettingsConfig; // Settings of the app, set by default then mutated to user ones.
+let globalUserNamesRules: UserNamesRules | undefined = undefined; // Holds the allowed students' names and surnames.
 
 // Strict login names:
-//
-type UserNamesRules = [
-  {}: any
-]
 
-let globalUserNamesRules: UserNamesRules;
+type UserNamesRules = [
+  {
+    "nom": string,
+    "prenom": string,
+  }
+]
 
 // Find IP addresses of the server:
 
@@ -238,6 +240,9 @@ const startQuizAPIServer = () => {
       });
     }
   });
+  APIServer.get("/get-strict-usernames", (req: any, res: any) => {
+    res.send(globalUserNamesRules);
+  })
   APIServer.get("*", (req: any, res: any) => {
     res.redirect("/");
   });
@@ -386,7 +391,7 @@ const exportUsersDataToCSV = () => {
       sendNotification(
         createNewNotification(
           "Données élèves exportées",
-          `Les données ont été exportées dans le fichier: ${path}.`
+          `Données exportées dans le fichier: ${path}.`
         )
       );
     }
@@ -395,23 +400,21 @@ const exportUsersDataToCSV = () => {
 
 // Read strict student names rules from .CSV file:
 
-const readUserNamesRulesFromCSV = () => {
-  let inputCSVFilePath: string;
+const readUserNamesRulesFromCSV = async () => {
   if (!isDialogWithFileImportOpen) {
     isDialogWithFileImportOpen = true;
-    dialog
+    const res = await dialog
       .showOpenDialog({
         properties: ["openFile"],
-        filters: [{ name: "CSV file", extensions: ["csv"] }],
+        filters: [{ name: "fichier CSV", extensions: ["csv"] }],
       })
-      .then((res: any) => {
-        if (res.filePaths.length === 1) {
-          inputCSVFilePath =
-            globalUserNamesRules = csvToJson.getJsonFromCsv(res.filePaths[0]);
-        }
-        isDialogWithFileImportOpen = false;
-      });
+    if (res.filePaths.length === 1) {
+      const data = fs.readFileSync(res.filePaths[0]).toString();
+      globalUserNamesRules = csvToObj(data);
+    }
+    isDialogWithFileImportOpen = false;
   }
+  return globalUserNamesRules;
 }
 
 // WINDOW:
@@ -454,7 +457,7 @@ async function createWindow() {
       isDialogWithFileImportOpen = true;
       dialog
         .showSaveDialog({
-          filters: [{ name: "JSON file", extensions: ["json"] }],
+          filters: [{ name: "fichier JSON", extensions: ["json"] }],
         })
         .then((res: any) => {
           if (res.filePath !== undefined && res.filePath !== "") {
@@ -508,7 +511,7 @@ async function createWindow() {
       dialog
         .showOpenDialog({
           properties: ["openFile"],
-          filters: [{ name: "JSON file", extensions: ["json"] }],
+          filters: [{ name: "fichier JSON", extensions: ["json"] }],
         })
         .then((res: any) => {
           if (res.filePaths.length === 1) {
@@ -632,11 +635,11 @@ async function createWindow() {
     webContents.send("receive-available-IPs", findIPaddresses());
   });
 
-  // UserRules:
+  // UsersRules:
 
   ipcMain.on("set-users-rules", async () => {
-    await readUserNamesRulesFromCSV();
-    webContents.send("receive-users-rules", globalUserNamesRules);
+    const usersRules = await readUserNamesRulesFromCSV();
+    webContents.send("receive-users-rules", usersRules);
   });
 
   //
