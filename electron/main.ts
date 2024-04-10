@@ -7,6 +7,7 @@ const session: any = require("express-session");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
 const csvWriter = require("csv-writer");
+const CsvToJson = require('convert-csv-to-json');
 const { networkInterfaces } = require("os");
 
 const nets: any = networkInterfaces();
@@ -41,15 +42,23 @@ const userDataPath: any = app.getPath("userData");
 const staticSettingsConfig = require(`${process.env.VITE_PUBLIC}/config/staticSettingsConfig`);
 
 let win: BrowserWindow | null;
-let sessionType: string = "";
-let globalQuizFilePath: string = "";
-let quizJSONConfig: string = "";
-let parsedQuizJSONConfig: any = {};
-let QuizAPIServerPort: number = 3333;
-let winWebContents: any = null;
-let isDialogWithFileImportOpen: boolean = false;
-let sessionTime: any;
-let settings: any = staticSettingsConfig;
+let sessionType: string = ""; // Used to render the import/create quiz on front end.
+let globalQuizFilePath: string = ""; // Path of the imported quiz file conf.
+let quizJSONConfig: string = ""; // JSON string of the previous file.
+let parsedQuizJSONConfig: any = {}; // Object of the previous JSON var.
+let QuizAPIServerPort: number = 3333; // Port on which the server runs.
+let winWebContents: any = null; // webContents to use outside the window declaration, when it is already set.
+let isDialogWithFileImportOpen: boolean = false; // Bool to avoid opening multiple file managers in the same time.
+let sessionTime: any; // The time on which the session was started, used to deauthenticate the clients of older sessions.
+let settings: any = staticSettingsConfig; // Settings of the app, set by default then mutated to user ones.
+
+// Strict login names:
+//
+type UserNamesRules = [
+  {}:any
+]
+
+let globalUserNamesRules:UserNamesRules;
 
 // Find IP addresses of the server:
 
@@ -384,6 +393,27 @@ const exportUsersDataToCSV = () => {
   });
 };
 
+// Read strict student names rules from .CSV file:
+
+const readUserNamesRulesFromCSV = () => {
+  let inputCSVFilePath:string;
+  if (!isDialogWithFileImportOpen) {
+    isDialogWithFileImportOpen = true;
+    dialog
+        .showOpenDialog({
+          properties: ["openFile"],
+          filters: [{ name: "CSV file", extensions: ["csv"] }],
+        })
+        .then((res: any) => {
+          if (res.filePaths.length === 1) {
+            inputCSVFilePath = 
+            globalUserNamesRules = csvToJson.getJsonFromCsv(res.filePaths[0]);
+          }
+          isDialogWithFileImportOpen = false;
+        });
+  }
+}
+
 // WINDOW:
 
 async function createWindow() {
@@ -600,6 +630,13 @@ async function createWindow() {
 
   ipcMain.on("get-available-IPs", () => {
     webContents.send("receive-available-IPs", findIPaddresses());
+  });
+  
+  // UserRules:
+
+  ipcMain.on("set-user-rules", async ()=> {
+    await readUserNamesRulesFromCSV();
+    webContents.send("receive-user-rules", globalUserNamesRules);
   });
 
   //
