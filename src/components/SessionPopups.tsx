@@ -1,3 +1,4 @@
+import ImportUsersRules from "./ImportUsersRules";
 import SettingsManager from "./SettingsManager";
 
 const SessionPopups = () => {
@@ -19,7 +20,10 @@ const SessionPopups = () => {
           <h3>Importer une session</h3>
         </div>
       </div>
-      <SettingsManager />
+      <div className="actions">
+        <SettingsManager />
+        <ImportUsersRules />
+      </div>
     </div>
   );
 };

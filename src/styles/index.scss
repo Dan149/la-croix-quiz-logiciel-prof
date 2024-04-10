@@ -8,11 +8,12 @@
 @import url(./components/_NotificationPopup.scss);
 @import url(./components/_SettingsManager.scss);
 @import url(./components/_ToggleSettingBox.scss);
+@import url(./components/_UserDataDisplay.scss);
+@import url(./components/_ServerIPDisplay.scss);
+@import url(./components/_ImportUsersRules.scss);
 // layouts:
 @import url(./layouts/_Header.scss);
 @import url(./layouts/_Footer.scss);
 @import url(./layouts/_Main.scss);
-@import url(./components/_UserDataDisplay.scss);
-@import url(./components/_ServerIPDisplay.scss);
 // Dark Mode:
 @import url(./_darkMode.scss);

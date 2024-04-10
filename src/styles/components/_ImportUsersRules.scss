@@ -1,0 +1,14 @@
+@use "../mixins";
+
+.show-import-users-rules {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  bottom: 2%;
+  right: 2%;
+  background: rgba(255, 255, 255, 0.788);
+  border-radius: 10px;
+  border: 1px solid black;
+  z-index: 1500;
+  @include mixins.BackButton;
+}

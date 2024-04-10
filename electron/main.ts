@@ -55,10 +55,10 @@ let settings: any = staticSettingsConfig; // Settings of the app, set by default
 // Strict login names:
 //
 type UserNamesRules = [
-  {}:any
+  {}: any
 ]
 
-let globalUserNamesRules:UserNamesRules;
+let globalUserNamesRules: UserNamesRules;
 
 // Find IP addresses of the server:
 
@@ -396,21 +396,21 @@ const exportUsersDataToCSV = () => {
 // Read strict student names rules from .CSV file:
 
 const readUserNamesRulesFromCSV = () => {
-  let inputCSVFilePath:string;
+  let inputCSVFilePath: string;
   if (!isDialogWithFileImportOpen) {
     isDialogWithFileImportOpen = true;
     dialog
-        .showOpenDialog({
-          properties: ["openFile"],
-          filters: [{ name: "CSV file", extensions: ["csv"] }],
-        })
-        .then((res: any) => {
-          if (res.filePaths.length === 1) {
-            inputCSVFilePath = 
+      .showOpenDialog({
+        properties: ["openFile"],
+        filters: [{ name: "CSV file", extensions: ["csv"] }],
+      })
+      .then((res: any) => {
+        if (res.filePaths.length === 1) {
+          inputCSVFilePath =
             globalUserNamesRules = csvToJson.getJsonFromCsv(res.filePaths[0]);
-          }
-          isDialogWithFileImportOpen = false;
-        });
+        }
+        isDialogWithFileImportOpen = false;
+      });
   }
 }
 
@@ -631,12 +631,12 @@ async function createWindow() {
   ipcMain.on("get-available-IPs", () => {
     webContents.send("receive-available-IPs", findIPaddresses());
   });
-  
+
   // UserRules:
 
-  ipcMain.on("set-user-rules", async ()=> {
+  ipcMain.on("set-users-rules", async () => {
     await readUserNamesRulesFromCSV();
-    webContents.send("receive-user-rules", globalUserNamesRules);
+    webContents.send("receive-users-rules", globalUserNamesRules);
   });
 
   //

@@ -92,8 +92,8 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.on("receive-available-IPs", callback);
   },
   // UserRules:
-  setUserRules: (callback:any)=>{
-    ipcRenderer.send("set-user-rules");
-    ipcRenderer.on("receive-user-rules", callback);
-  }, 
+  setUsersRules: (callback: any) => {
+    ipcRenderer.send("set-users-rules");
+    ipcRenderer.on("receive-users-rules", callback);
+  },
 });
