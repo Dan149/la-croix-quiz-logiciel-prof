@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
+
   h2 {
     display: flex;
     align-items: center;
@@ -23,6 +24,8 @@
     width: 2rem;
     border: 1px solid black;
     border-radius: 1000px;
+    cursor: pointer;
+
     &:hover {
       transform: rotate(-360deg);
       background: rgb(255, 180, 180);
@@ -35,13 +38,16 @@
     width: 10px;
     height: 10px;
   }
+
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
     border-radius: 10px;
   }
+
   &::-webkit-scrollbar-thumb {
     background: rgb(165, 165, 165);
     border-radius: 10px;
+
     &:hover {
       background: rgb(124, 124, 124);
     }
@@ -52,6 +58,7 @@
   overflow-y: scroll;
   height: 90%;
   @include BasicComponentScrollbar;
+
   .question-item {
     position: relative;
     transition: 500ms ease;
@@ -63,6 +70,7 @@
     padding: 10px 0;
     overflow-x: scroll;
     @include BasicComponentScrollbar;
+
     .amount {
       position: absolute;
       top: 8px;
@@ -72,24 +80,28 @@
       border: 1px solid black;
       border-radius: 20px;
     }
+
     h4 {
       text-align: center;
       margin: 0 auto;
       margin-top: 4px;
       width: 70%;
     }
+
     ol {
       padding: 20px 0;
       width: 80%;
       margin: 0 auto;
       display: grid;
       grid-template: 1fr 1fr;
+
       li {
         width: 100%;
         list-style-type: upper-latin;
         width: fit-content;
       }
     }
+
     &:hover {
       background: rgb(230, 230, 230);
     }
@@ -104,6 +116,7 @@
   box-shadow: 2px 2px 10px #a3a3a3, -2px -2px 10px #ffffff;
   border: 1px solid black;
   border-radius: 3px;
+
   &:hover {
     background: rgb(228, 218, 255);
     text-decoration: underline;

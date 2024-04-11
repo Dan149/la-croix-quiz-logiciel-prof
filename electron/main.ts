@@ -52,7 +52,7 @@ let isDialogWithFileImportOpen: boolean = false; // Bool to avoid opening multip
 let sessionTime: any; // The time on which the session was started, used to deauthenticate the clients of older sessions.
 let settings: any = staticSettingsConfig; // Settings of the app, set by default then mutated to user ones.
 let globalUserNamesRules: UserNamesRules | undefined = undefined; // Holds the allowed students' names and surnames.
-
+let leftUserNames: UserNamesRules | undefined; // Left user names to choose from.
 // Strict login names:
 
 type UserNamesRules = [
@@ -205,6 +205,8 @@ const startQuizAPIServer = () => {
   });
   APIServer.post("/join-session", (req: any, res: any) => {
     const newUserId = usersData.length;
+    let canCreateUser = false;
+    // multiple verifications before creating user:
     try {
       if (
         !usersData.some(
@@ -212,6 +214,17 @@ const startQuizAPIServer = () => {
             user.nom === req.body.nom && user.prenom === req.body.prenom
         )
       ) {
+        if (globalUserNamesRules !== undefined) {
+          if (isStrictUserNameValid(req.body.nom, req.body.prenom)) {
+            leftUserNames = leftUserNames.filter((userName: any) => userName.nom !== req.body.nom && userName.prenom !== req.body.prenom);
+            canCreateUser = true;
+          };
+        } else {
+          canCreateUser = true;
+        }
+      }
+      // Creating user:
+      if (canCreateUser) {
         usersData.push({
           nom: req.body.nom,
           prenom: req.body.prenom,
@@ -227,10 +240,11 @@ const startQuizAPIServer = () => {
           type: "info",
           message: `Utilisateur ${req.body.nom} ${req.body.prenom} ajouté sous l'identifiant ${newUserId}.`,
         });
-      } else {
+      }
+      else {
         res.json({
           serverStatus: "error",
-          errorMessage: "L'utilisateur existe déjà. Veuillez changer le nom",
+          errorMessage: "L'utilisateur existe déjà. Veuillez changer le nom.",
         });
       }
     } catch (err: any) {
@@ -241,7 +255,7 @@ const startQuizAPIServer = () => {
     }
   });
   APIServer.get("/get-strict-usernames", (req: any, res: any) => {
-    res.send(globalUserNamesRules);
+    res.send(leftUserNames);
   })
   APIServer.get("*", (req: any, res: any) => {
     res.redirect("/");
@@ -410,11 +424,17 @@ const readUserNamesRulesFromCSV = async () => {
       })
     if (res.filePaths.length === 1) {
       const data = fs.readFileSync(res.filePaths[0]).toString();
-      globalUserNamesRules = csvToObj(data);
+      globalUserNamesRules = leftUserNames = csvToObj(data);
     }
     isDialogWithFileImportOpen = false;
   }
   return globalUserNamesRules;
+}
+
+const isStrictUserNameValid = (nom: string, prenom: string) => {
+  if (leftUserNames !== undefined) {
+    return leftUserNames.find((userName) => { return userName.nom === nom && userName.prenom === prenom }) !== undefined // Checks if user name is choosable.
+  }
 }
 
 // WINDOW:
@@ -569,6 +589,7 @@ async function createWindow() {
         message: "Serveur de session quiz fermé.",
       });
       usersData.length = 0;
+      leftUserNames = globalUserNamesRules;
     } catch {
       webContents.send("get-quiz-API-server-status", {
         type: "erreur",
