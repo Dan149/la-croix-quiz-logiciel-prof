@@ -7,7 +7,7 @@ const session: any = require("express-session");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
 const csvWriter = require("csv-writer");
-const csvToObj = require('csv-to-js-parser').csvToObj;
+const csvToObj = require("csv-to-js-parser").csvToObj;
 const { networkInterfaces } = require("os");
 
 const nets: any = networkInterfaces();
@@ -57,10 +57,10 @@ let leftUserNames: UserNamesRules | undefined; // Left user names to choose from
 
 type UserNamesRules = [
   {
-    "nom": string,
-    "prenom": string,
+    nom: string;
+    prenom: string;
   }
-]
+];
 
 // Find IP addresses of the server:
 
@@ -216,9 +216,13 @@ const startQuizAPIServer = () => {
       ) {
         if (globalUserNamesRules !== undefined) {
           if (isStrictUserNameValid(req.body.nom, req.body.prenom)) {
-            leftUserNames = leftUserNames.filter((userName: any) => userName.nom !== req.body.nom && userName.prenom !== req.body.prenom);
+            leftUserNames = leftUserNames.filter(
+              (userName: any) =>
+                userName.nom !== req.body.nom &&
+                userName.prenom !== req.body.prenom
+            );
             canCreateUser = true;
-          };
+          }
         } else {
           canCreateUser = true;
         }
@@ -240,8 +244,7 @@ const startQuizAPIServer = () => {
           type: "info",
           message: `Utilisateur ${req.body.nom} ${req.body.prenom} ajouté sous l'identifiant ${newUserId}.`,
         });
-      }
-      else {
+      } else {
         res.json({
           serverStatus: "error",
           errorMessage: "L'utilisateur existe déjà. Veuillez changer le nom.",
@@ -256,7 +259,7 @@ const startQuizAPIServer = () => {
   });
   APIServer.get("/get-strict-usernames", (req: any, res: any) => {
     res.send(leftUserNames);
-  })
+  });
   APIServer.get("*", (req: any, res: any) => {
     res.redirect("/");
   });
@@ -283,9 +286,6 @@ const createUserSettingsFile = () => {
             "Une erreur est survenue lors de la création du fichier de configuration utilisateur."
           )
         );
-        if (settings.allowDebug.value === "true") {
-          console.log(err);
-        }
       }
     }
   );
@@ -322,9 +322,6 @@ const enableUserSettings = () => {
               )
             );
           }, 5000);
-          if (settings.allowDebug.value === "true") {
-            console.log(err);
-          }
           createUserSettingsFile();
         } else {
           settings = JSON.parse(data);
@@ -357,9 +354,6 @@ const saveSettingsToConfFile = () => {
             "Une erreur est survenue lors de la sauvegarde des paramètres."
           )
         );
-        if (settings.allowDebug.value === "true") {
-          console.log(err);
-        }
       }
     }
   );
@@ -368,7 +362,7 @@ const saveSettingsToConfFile = () => {
 // Save user data to CSV:
 
 const exportUsersDataToCSV = () => {
-  const homePath = `${app.getPath("home")}/la-croix-quiz`;
+  const userQuizDataFolderPath = `${app.getPath("documents")}/la-croix-quiz`;
   const filteredUsersData: any = [];
   usersData.forEach((user) => {
     const validOnes: number = user.answersValidity.filter(Boolean).length;
@@ -379,17 +373,12 @@ const exportUsersDataToCSV = () => {
     });
   });
 
-  fs.access(homePath, (err: any) => {
-    if (err) {
-      // RAAAAAAAAAHHHHHH
-      fs.mkdir(homePath, (err: any) => {
-        console.log(err);
-      });
-    }
-  });
+  if (!fs.existsSync(userQuizDataFolderPath)) {
+    fs.mkdir(userQuizDataFolderPath, (err: any) => console.log(err));
+  }
 
   const date = new Date();
-  const path = `${homePath}/donnees-eleve-${date
+  const path = `${userQuizDataFolderPath}/donnees-eleve-${date
     .toLocaleString()
     .replace(/[\/,\ ]/g, "-")}.csv`; // Replaces all "/" and spaces by "-".
   const writer = csvWriter.createObjectCsvWriter({
@@ -417,11 +406,10 @@ const exportUsersDataToCSV = () => {
 const readUserNamesRulesFromCSV = async () => {
   if (!isDialogWithFileImportOpen) {
     isDialogWithFileImportOpen = true;
-    const res = await dialog
-      .showOpenDialog({
-        properties: ["openFile"],
-        filters: [{ name: "fichier CSV", extensions: ["csv"] }],
-      })
+    const res = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "fichier CSV", extensions: ["csv"] }],
+    });
     if (res.filePaths.length === 1) {
       const data = fs.readFileSync(res.filePaths[0]).toString();
       globalUserNamesRules = leftUserNames = csvToObj(data);
@@ -429,13 +417,17 @@ const readUserNamesRulesFromCSV = async () => {
     isDialogWithFileImportOpen = false;
   }
   return globalUserNamesRules;
-}
+};
 
 const isStrictUserNameValid = (nom: string, prenom: string) => {
   if (leftUserNames !== undefined) {
-    return leftUserNames.find((userName) => { return userName.nom === nom && userName.prenom === prenom }) !== undefined // Checks if user name is choosable.
+    return (
+      leftUserNames.find((userName) => {
+        return userName.nom === nom && userName.prenom === prenom;
+      }) !== undefined
+    ); // Checks if user name is choosable.
   }
-}
+};
 
 // WINDOW:
 

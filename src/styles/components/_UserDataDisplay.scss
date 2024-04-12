@@ -9,6 +9,17 @@
   border-radius: 10px;
   border: 1px solid black;
   z-index: 1500;
+  .info {
+    display: block;
+    width: 75%;
+    margin: 1rem auto;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.85rem;
+    background: rgb(200, 200, 200);
+    box-shadow: 2px 2px 3px gray;
+    border-radius: 4px;
+  }
   .users-cards-container {
     position: absolute;
     top: 2%;
