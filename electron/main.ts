@@ -1,9 +1,14 @@
+// Hey !  if you read this it means that you probably maintain the project!
+// So, some clarifications:
+// - I wrote the comments in english instead of french because that's what developers do, and while it might just be a school project, it is still important to have that skill, so good luck understanding it all if you are a frenchie ;)
+// - I don't think that I'll maintain the project on the long run, but if you have questions feel free to write me an email at danfaldev@gmail.com.
 import { app, BrowserWindow, ipcMain, session } from "electron";
 import path from "node:path";
 const { dialog } = require("electron");
 const express: any = require("express");
 const cors: any = require("cors");
 const session: any = require("express-session");
+const serveIndex: any = require("serve-index");
 const crypto: any = require("crypto");
 const fs = require("node:fs");
 const csvWriter = require("csv-writer");
@@ -11,18 +16,6 @@ const csvToObj = require("csv-to-js-parser").csvToObj;
 const { networkInterfaces } = require("os");
 
 const nets: any = networkInterfaces();
-
-type UserData = {
-  // Type of the elements of the usersData array.
-  nom: string;
-  prenom: string;
-  id: number;
-  answersValidity: Array<boolean>; // array of bool
-  hasFinished: boolean; // quiz finished or not
-  // security:
-  clientIP: string;
-  sessionId: string;
-};
 
 // The built directory structure
 //
@@ -56,11 +49,33 @@ let leftUserNames: UserNamesRules | undefined; // Left user names to choose from
 // Strict login names:
 
 type UserNamesRules = [
+  // type of array containing the available user names, this data is acquired by reading a .csv file.
   {
     nom: string;
     prenom: string;
   }
 ];
+
+type UserData = {
+  // Type of the elements of the usersData array.
+  nom: string;
+  prenom: string;
+  id: number;
+  answersValidity: Array<boolean>; // array of bool
+  hasFinished: boolean; // quiz finished or not
+  // security:
+  clientIP: string;
+  sessionId: string;
+};
+
+// Checks if the app folder exists in the Documents, if it doesn't, creates it:
+const userQuizDataFolderPath = `${app.getPath("documents")}/la-croix-quiz`; // Path to the said folder.
+
+const findAppDocumentsFolder = () => {
+  if (!fs.existsSync(userQuizDataFolderPath)) {
+    fs.mkdir(userQuizDataFolderPath, (err: any) => console.log(err));
+  }
+};
 
 // Find IP addresses of the server:
 
@@ -119,6 +134,14 @@ APIServer.use(
   })
 );
 APIServer.use(express.static(path.join(process.env.VITE_PUBLIC, "/client")));
+if (!fs.existsSync(`${userQuizDataFolderPath}/partage`)) {
+  fs.mkdir(`${userQuizDataFolderPath}/partage`, (err: any) => console.log(err));
+}
+APIServer.use(
+  "/partage",
+  express.static(`${userQuizDataFolderPath}/partage`),
+  serveIndex(`${userQuizDataFolderPath}/partage`)
+); // shared folder
 
 const usersData: UserData[] = [];
 const votesData: any = []; // items: votes array (for each question)
@@ -217,6 +240,7 @@ const startQuizAPIServer = () => {
         if (globalUserNamesRules !== undefined) {
           if (isStrictUserNameValid(req.body.nom, req.body.prenom)) {
             leftUserNames = leftUserNames.filter(
+              // Stupid TS server error...
               (userName: any) =>
                 userName.nom !== req.body.nom &&
                 userName.prenom !== req.body.prenom
@@ -362,7 +386,6 @@ const saveSettingsToConfFile = () => {
 // Save user data to CSV:
 
 const exportUsersDataToCSV = () => {
-  const userQuizDataFolderPath = `${app.getPath("documents")}/la-croix-quiz`;
   const filteredUsersData: any = [];
   usersData.forEach((user) => {
     const validOnes: number = user.answersValidity.filter(Boolean).length;
@@ -372,10 +395,6 @@ const exportUsersDataToCSV = () => {
       note: `${validOnes}/${user.answersValidity.length}`,
     });
   });
-
-  if (!fs.existsSync(userQuizDataFolderPath)) {
-    fs.mkdir(userQuizDataFolderPath, (err: any) => console.log(err));
-  }
 
   const date = new Date();
   const path = `${userQuizDataFolderPath}/donnees-eleve-${date
@@ -443,7 +462,9 @@ async function createWindow() {
   });
 
   const webContents = win.webContents;
-  winWebContents = win.webContents; // for outside functions.
+  winWebContents = win.webContents; // for outside current scope functions
+
+  findAppDocumentsFolder(); // checks the existance of the app folder in ~/Documents
 
   enableUserSettings(); // enable settings from json user settings file (../public/config/userSettings.json)
 
