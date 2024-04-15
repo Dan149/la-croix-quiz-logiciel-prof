@@ -5,18 +5,18 @@
 //
 // Sincerely yours,
 // Daniel.
-import { app, BrowserWindow, ipcMain, session } from "electron";
+import { app, BrowserWindow, ipcMain } from "electron";
+import expressSession from "express-session";
 import path from "node:path";
+import crypto from "crypto";
+import { networkInterfaces } from "os";
+import fs from "node:fs";
+import express from "express";
 const { dialog } = require("electron");
-const express: any = require("express");
 const cors: any = require("cors");
-const session: any = require("express-session");
 const serveIndex: any = require("serve-index");
-const crypto: any = require("crypto");
-const fs = require("node:fs");
-const csvWriter = require("csv-writer");
+const csvWriter = require("csv-writer")
 const csvToObj = require("csv-to-js-parser").csvToObj;
-const { networkInterfaces } = require("os");
 
 const nets: any = networkInterfaces();
 
@@ -49,7 +49,7 @@ let isDialogWithFileImportOpen: boolean = false; // Bool to avoid opening multip
 let sessionTime: any; // The time on which the session was started, used to deauthenticate the clients of older sessions.
 let settings: any = staticSettingsConfig; // Settings of the app, set by default then mutated to user ones.
 let globalUserNamesRules: UserNamesRules | undefined = undefined; // Holds the allowed students' names and surnames.
-let leftUserNames: UserNamesRules | undefined; // Left user names to choose from.
+let leftUserNames: any; // Left user names to choose from.
 // Strict login names:
 
 type UserNamesRules = [
@@ -128,7 +128,7 @@ let allowClientQuizStart = false;
 APIServer.use(cors());
 APIServer.use(express.json());
 APIServer.use(
-  session({
+  expressSession({
     secret: crypto.randomUUID(),
     cookie: {
       httpOnly: true,
@@ -400,6 +400,7 @@ const exportUsersDataToCSV = () => {
       nom: user.nom,
       prenom: user.prenom,
       note: `${validOnes}/${user.answersValidity.length}`,
+      status: user.hasFinished ? "Quiz fini" : "Quiz incomplet",
     });
   });
 
@@ -410,9 +411,10 @@ const exportUsersDataToCSV = () => {
   const writer = csvWriter.createObjectCsvWriter({
     path,
     header: [
-      { id: "nom", title: "Nom" },
-      { id: "prenom", title: "Prénom" },
-      { id: "note", title: "Note" },
+      { id: "nom", title: "nom" },
+      { id: "prenom", title: "prenom" },
+      { id: "note", title: "note" },
+      { id: "status", title: "status" }
     ],
   });
   writer.writeRecords(filteredUsersData).then((_out: void, err: any) => {
@@ -445,10 +447,10 @@ const readUserNamesRulesFromCSV = async () => {
   return globalUserNamesRules;
 };
 
-const isStrictUserNameValid = (nom: string, prenom: string, password:string|undefined) => {
+const isStrictUserNameValid = (nom: string, prenom: string, password: string | undefined) => {
   if (leftUserNames !== undefined) {
     return (
-      leftUserNames.find((userName) => {
+      leftUserNames.find((userName: any) => {
         return userName.nom === nom && userName.prenom === prenom && (userName.password === password || (userName.password == undefined && password == ""));
       }) !== undefined
     ); // Checks if user name is choosable.
@@ -476,7 +478,7 @@ async function createWindow() {
   enableUserSettings(); // enable settings from json user settings file (../public/config/userSettings.json)
 
   setTimeout(() => {
-    if (settings.allowDebug.value === "false") win.setMenu(null);
+    if (settings.allowDebug.value === "false" && win) win.setMenu(null);
   }, 1000);
 
   ipcMain.on("get-app-version", async () => {

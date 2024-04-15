@@ -21,7 +21,7 @@ const NotificationManager = () => {
     if (!isListeningToNotifications.current) {
       isListeningToNotifications.current = true
 
-      window.api.listenToNewNotifications(async (event: void, newNotification: any) => {
+      window.api.listenToNewNotifications(async (_event: void, newNotification: any) => {
         if (isCurrentNotificationEmpty.current) {
           isCurrentNotificationEmpty.current = false
           setCurrentNotification(await newNotification)

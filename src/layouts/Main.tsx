@@ -7,10 +7,10 @@ import NotificationManager from "../components/NotificationManager";
 const Main = () => {
   const [sessionType, setSessionType] = useState("")
   useEffect(() => {
-    window.api.getSessionType((event: void, type: string) => {
+    window.api.getSessionType((_event: void, type: string) => {
       setSessionType(type)
     })
-    window.api.getSettingsString((event: any, settingsString: string) => {
+    window.api.getSettingsString((_event: any, settingsString: string) => {
       const settings: any = JSON.parse(settingsString)
       const body: any = document.getElementById("body")
       if (settings.darkMode.value == "true") {

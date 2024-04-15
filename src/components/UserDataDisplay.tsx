@@ -7,7 +7,7 @@ const UserDataDisplay = () => {
   const fetchUsersDataInterval: any = useRef(null);
 
   const fetchUsersData = () => {
-    window.api.getUsersData((event: void, APIUsersData: any) => {
+    window.api.getUsersData((_event: void, APIUsersData: any) => {
       setUsersData(APIUsersData);
     });
   };

@@ -1,5 +1,13 @@
 import { contextBridge, ipcRenderer } from "electron";
 
+// Sets window.api in TypeScript to avoid further errors:
+
+declare global {
+  interface Window { api: any; }
+}
+
+window.api = window.api || {};
+
 // Bridge between front and back end of the app. (API)
 
 contextBridge.exposeInMainWorld("api", {

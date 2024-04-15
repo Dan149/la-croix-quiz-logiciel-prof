@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 const NotificationPopup = (props: any) => {
   const [isPopupShown, setIsPopupShown] = useState(true)

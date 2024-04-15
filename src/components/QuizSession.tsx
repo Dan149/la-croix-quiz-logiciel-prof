@@ -65,7 +65,7 @@ const QuizSession = (props: any) => { // filepath
           {isAPIServerOn ? <>
             <ServerIPDisplay />
             {!isQuizStartAllowed ? <button onClick={() => allowQuizStart()} id="action">Autoriser le début du quiz</button> : ""}</> : ""}
-          {isAPIServerOn ? <button onClick={() => handleQuizAPIServerStop()} id="action" className="close-btn">Fermer la session</button> : <button onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
+          {isAPIServerOn ? <button onClick={() => handleQuizAPIServerStop()} id="action" className="close-btn">Fermer la session</button> : <button onClick={() => handleQuizAPIServerStart()} id="action">C'est parti !</button>}
         </div>
       </div>
     </div>

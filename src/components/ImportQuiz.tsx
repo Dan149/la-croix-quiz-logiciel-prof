@@ -11,10 +11,10 @@ const ImportQuiz = () => {
     useEffect(() => {
         if (!isUseEffectInitialized.current) {
             isUseEffectInitialized.current = true
-            window.api.getQuizJSON(async (event: void, JSONFile: string) => {
+            window.api.getQuizJSON((_event: void, JSONFile: string) => {
                 setImportedQuizJSONFile(JSON.parse(JSONFile))
-                window.api.getGlobalQuizFilePath(async (event: void, ipcGlobalQuizFilePath: string) => {
-                    await setGlobalQuizFilePath(ipcGlobalQuizFilePath)
+                window.api.getGlobalQuizFilePath((_event: void, ipcGlobalQuizFilePath: string) => {
+                    setGlobalQuizFilePath(ipcGlobalQuizFilePath)
                 })
             })
         }
@@ -33,8 +33,8 @@ const ImportQuiz = () => {
                     <BackButton />
                     <h2>Veuillez sélectionner un fichier pour continuer.</h2>
                     <button onClick={() => {
-                        window.api.importQuizJSON(async (event: void, JSONFile: string) => {
-                            await setImportedQuizJSONFile(JSON.parse(JSONFile))
+                        window.api.importQuizJSON((_event: void, JSONFile: string) => {
+                            setImportedQuizJSONFile(JSON.parse(JSONFile))
                         })
                     }}>Ouvrir un fichier</button>
                     {globalQuizFilePath == "" ? "" : <button onClick={() => handleFileUse()}>Utiliser ce fichier</button>}

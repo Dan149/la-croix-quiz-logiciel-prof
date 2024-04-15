@@ -6,8 +6,8 @@
   "version": "0.0.5",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && electron-builder",
-    "build-win": "vite build && electron-builder build -w --ia32 --x64",
+    "build": "tsc && vite build && electron-builder",
+    "build-win": "tsc && vite build && electron-builder build -w --ia32 --x64",
     "pbuild": "electron-builder",
     "pbuild-win": "electron-builder build -w --ia32 --x64",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
@@ -25,6 +25,7 @@
     "serve-index": "^1.9.1"
   },
   "devDependencies": {
+    "@types/express-session": "^1.18.0",
     "@types/react": "^18.2.21",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.6.0",

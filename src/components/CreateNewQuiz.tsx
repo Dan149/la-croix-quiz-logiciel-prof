@@ -26,13 +26,13 @@ const CreateNewQuiz = () => {
         }
     }
 
-    const handleQuestionRemove = (e: any, key: number) => {
-        const newQuestionArray = questionArray.filter((question: any, index) => index !== key)
+    const handleQuestionRemove = (_e: any, key: number) => {
+        const newQuestionArray = questionArray.filter((_question: any, index) => index !== key)
         setQuestionArray(newQuestionArray)
     }
 
     useEffect(() => {
-        window.api.getGlobalQuizFilePath((event: void, ipcGlobalQuizFilePath: string) => {
+        window.api.getGlobalQuizFilePath((_event: void, ipcGlobalQuizFilePath: string) => {
             setGlobalQuizFilePath(ipcGlobalQuizFilePath)
         })
     }, [])

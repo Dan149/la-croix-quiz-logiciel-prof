@@ -8,7 +8,7 @@ const SettingsManager = () => {
   const isUseEffectInitialized = useRef(false)
 
   const importSettingsList = () => {
-    window.api.getSettingsString((event: void, settingsString: string) => {
+    window.api.getSettingsString((_event: void, settingsString: string) => {
       setSettingsList(JSON.parse(settingsString))
     })
   }

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 const Header = () => {
   const [appVersion, setAppVersion] = useState("")
   useEffect(() => {
-    window.api.getAppVersion((event: void, version: any) => {
+    window.api.getAppVersion((_event: void, version: any) => {
       setAppVersion(version)
     })
   }, [])
