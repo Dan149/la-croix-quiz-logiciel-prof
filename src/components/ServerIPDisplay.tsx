@@ -41,7 +41,7 @@ const ServerIPDisplay = () => {
           </div>
         </div>
 
-      </div> : <button className="server-ip-btn btn" onClick={() => setShowServerIPDisplay(true)}>Afficher le lien du quiz</button>
+      </div> : <button onClick={() => setShowServerIPDisplay(true)}>Afficher le lien du quiz</button>
   );
 };
 

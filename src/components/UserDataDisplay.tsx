@@ -76,10 +76,9 @@ const UserDataDisplay = () => {
               <ul>
                 <li>
                   <span>Note:</span>{" "}
-                  {`${
-                    user.answersValidity.filter((value: boolean) => value)
+                  {`${user.answersValidity.filter((value: boolean) => value)
                       .length
-                  }/${user.answersValidity.length}`}
+                    }/${user.answersValidity.length}`}
                 </li>
                 <li>
                   <span>Succès:</span>{" "}
@@ -87,7 +86,7 @@ const UserDataDisplay = () => {
                     (user.answersValidity.filter((value: boolean) => value)
                       .length /
                       user.answersValidity.length) *
-                      100
+                    100
                   )}%`}
                 </li>
               </ul>
@@ -98,7 +97,6 @@ const UserDataDisplay = () => {
     </div>
   ) : (
     <button
-      className="user-data-display-btn btn"
       onClick={() => {
         setShowUserData(true);
         fetchUsersData();

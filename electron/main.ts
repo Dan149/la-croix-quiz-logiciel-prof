@@ -2,6 +2,9 @@
 // So, some clarifications:
 // - I wrote the comments in english instead of french because that's what developers do, and while it might just be a school project, it is still important to have that skill, so good luck understanding it all if you are a frenchie ;)
 // - I don't think that I'll maintain the project on the long run, but if you have questions feel free to write me an email at danfaldev@gmail.com.
+//
+// Sincerely yours,
+// Daniel.
 import { app, BrowserWindow, ipcMain, session } from "electron";
 import path from "node:path";
 const { dialog } = require("electron");
@@ -30,6 +33,7 @@ process.env.DIST = path.join(__dirname, "../dist");
 process.env.VITE_PUBLIC = app.isPackaged
   ? process.env.DIST
   : path.join(process.env.DIST, "../public");
+
 const userDataPath: any = app.getPath("userData");
 
 const staticSettingsConfig = require(`${process.env.VITE_PUBLIC}/config/staticSettingsConfig`);
@@ -140,7 +144,9 @@ if (!fs.existsSync(`${userQuizDataFolderPath}/partage`)) {
 APIServer.use(
   "/partage",
   express.static(`${userQuizDataFolderPath}/partage`),
-  serveIndex(`${userQuizDataFolderPath}/partage`)
+  serveIndex(`${userQuizDataFolderPath}/partage`, {
+    icons: true,
+  })
 ); // shared folder
 
 const usersData: UserData[] = [];
@@ -237,7 +243,7 @@ const startQuizAPIServer = () => {
             user.nom === req.body.nom && user.prenom === req.body.prenom
         )
       ) {
-        if (globalUserNamesRules !== undefined) {
+        if (globalUserNamesRules !== undefined) { // seen as user name selection on the client side.
           if (isStrictUserNameValid(req.body.nom, req.body.prenom)) {
             leftUserNames = leftUserNames.filter(
               // Stupid TS server error...

@@ -1,18 +1,22 @@
 body.dark {
   background: rgb(29, 29, 29);
   color: ghostwhite;
+
   #root {
     button {
       background: rgb(61, 61, 61);
       box-shadow: none;
       border: 1px solid gray;
       color: ghostwhite;
+
       &:hover {
         background: rgb(90, 90, 90);
       }
     }
+
     header {
       background: rgb(61, 61, 61);
+
       h2 {
         color: skyblue;
       }
@@ -27,106 +31,140 @@ body.dark {
       .notification-popup {
         background: rgb(61, 61, 61);
         box-shadow: 5px 5px 16px #373737, -5px -5px 16px #434343;
+
         .content {
           img {
             background: ghostwhite;
+
             &:hover {
               background: rgb(255, 180, 180);
             }
           }
         }
       }
+
       .user-data-display,
       .vote-like-display {
         color: black;
       }
+
       .import-quiz-container {
         button {
           border: 0;
         }
+
         .file-selection .filepath {
           background: rgb(39, 39, 39);
         }
+
         .questions-container .question-item {
           .amount {
             border: 1px solid white;
           }
+
           &:hover {
             background: rgb(39, 39, 39);
           }
         }
       }
+
       .session-popups {
         .settings-manager-container .settings-manager {
           background: rgb(61, 61, 61);
           box-shadow: 6px 6px 12px #373737, -6px -6px 12px #434343;
         }
+
         .session-popups-container .popup {
           background: rgb(61, 61, 61);
         }
       }
+
       .back-btn {
         background: ghostwhite;
+
         &:hover {
           background: rgb(255, 180, 180);
         }
       }
+
       .quiz-api-server-logs {
         color: black;
       }
+
       .menu-bar button {
         background: rgb(61, 61, 61);
         box-shadow: none;
         color: ghostwhite;
+
         &:hover {
           background: rgb(90, 90, 90);
         }
       }
+
       .questions-container .new-question {
         &:hover {
           background: rgb(39, 39, 39);
         }
       }
+
       .create-quiz-container #quiz-creator .questions-container .question-item {
         .amount {
           border: 1px solid white;
         }
+
         .remove-btn {
           cursor: pointer;
           background: ghostwhite;
+
           &:hover {
             background: rgb(255, 180, 180);
           }
         }
+
         &:hover {
           background: rgb(39, 39, 39);
         }
       }
     }
   }
+
   input,
   select {
     background: rgb(61, 61, 61);
     color: ghostwhite;
   }
+
   input[type="text"] {
     padding: 2px;
     border: 0;
     outline: none;
     border-bottom: 2px solid white;
+
     &::placeholder {
       color: ghostwhite;
     }
+
     &:focus {
       border-bottom: 2px solid skyblue;
     }
   }
+
   input[type="submit"] {
     color: ghostwhite;
     transition: 250ms;
     border: 1px solid gray;
+
     &:hover {
       background: rgb(90, 90, 90);
     }
+  }
+
+  .show-import-users-rules {
+    color: black;
+  }
+
+  .server-ip-display {
+    color: black;
+
   }
 }

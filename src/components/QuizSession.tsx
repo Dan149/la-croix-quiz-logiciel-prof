@@ -10,9 +10,9 @@ const QuizSession = (props: any) => { // filepath
   const [isQuizStartAllowed, setIsQuizStartAllowed] = useState(false)
   const useEffectInitialized = useRef(false)
 
-  const handleQuizAPIServerStart = async () => {
-    await setQuizAPIServerEvents([])
-    await setIsAPIServerOn(true);
+  const handleQuizAPIServerStart = () => {
+    setQuizAPIServerEvents([])
+    setIsAPIServerOn(true);
     window.api.startQuizAPIServer();
   }
   const handleQuizAPIServerStop = async () => {
@@ -56,14 +56,18 @@ const QuizSession = (props: any) => { // filepath
         })}
       </div> : <div className="empty-space"></div>}
 
-      {isQuizStartAllowed ? <>
-        <UserDataDisplay />
-        <VoteLikeDisplay />
-      </> : ""}
-      {isAPIServerOn ? <>
-        <ServerIPDisplay />
-        {!isQuizStartAllowed ? <button onClick={() => allowQuizStart()} className="allow-start-btn btn">Autoriser le début du quiz</button> : ""}</> : ""}
-      {isAPIServerOn ? <button className="stop-quiz-btn btn" onClick={() => handleQuizAPIServerStop()}>Fermer la session</button> : <button className="start-quiz-btn btn" onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
+      <div className="quiz-actions-container">
+        <div className="quiz-actions-flex">
+          {isQuizStartAllowed ? <>
+            <UserDataDisplay />
+            <VoteLikeDisplay />
+          </> : ""}
+          {isAPIServerOn ? <>
+            <ServerIPDisplay />
+            {!isQuizStartAllowed ? <button onClick={() => allowQuizStart()} >Autoriser le début du quiz</button> : ""}</> : ""}
+          {isAPIServerOn ? <button onClick={() => handleQuizAPIServerStop()} className="close-btn">Fermer la session</button> : <button onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
+        </div>
+      </div>
     </div>
   );
 };

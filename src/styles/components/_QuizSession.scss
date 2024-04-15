@@ -1,14 +1,18 @@
 @use "../mixins";
+
 .quiz-session-container {
   @include mixins.BackButton;
+
   h2 {
     padding: 20px;
     text-align: center;
   }
+
   h5.filepath {
     margin-bottom: 20px;
     text-align: center;
   }
+
   .quiz-api-server-logs {
     height: 40vh;
     width: 80%;
@@ -17,6 +21,7 @@
     padding: 10px 0;
     overflow-y: scroll;
     @include mixins.BasicComponentScrollbar;
+
     .event {
       min-height: 60px;
       width: 80%;
@@ -24,12 +29,14 @@
       margin: 0 auto;
       border-radius: 5px;
       margin-bottom: 10px;
+
       h5 {
         text-transform: capitalize;
         width: 100%;
         padding: 2px 0;
         text-align: center;
       }
+
       .event-message {
         padding-top: 5px;
         display: flex;
@@ -40,51 +47,69 @@
         font-style: italic;
       }
     }
+
     .event-type-info {
       background: rgb(175, 175, 255);
       border: 1px solid blue;
+
       h5 {
         background: rgb(124, 124, 255);
       }
     }
+
     .event-type-attention {
       background: rgb(255, 232, 170);
       border: 1px solid rgb(158, 158, 0);
+
       h5 {
         background: rgb(255, 241, 115);
       }
     }
+
     .event-type-erreur {
       background: rgb(255, 181, 181);
       border: 1px solid red;
+
       h5 {
         background: rgb(255, 130, 130);
       }
     }
   }
+
   .empty-space {
     height: 40vh;
   }
-  .stop-quiz-btn {
-    display: block;
+
+  .quiz-actions-container {
+    display: grid;
+    width: 80%;
     margin: 0 auto;
-    background: rgb(255, 190, 190);
-    &:hover {
-      background: rgb(255, 130, 130);
-      border: 1px solid red;
+    place-items: center;
+
+    .quiz-actions-flex {
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 2px 2px 3px gray;
+      width: fit-content;
+
+      button {
+        border: 0px;
+        background: rgb(196, 196, 196);
+        transition: 250ms ease;
+        padding: 5px 10px;
+
+        &:hover {
+          background: rgb(241, 241, 241);
+          text-decoration: underline;
+        }
+      }
+
+      .close-btn:hover {
+        background: rgb(255, 158, 158);
+        color: red;
+      }
     }
-  }
-  .start-quiz-btn {
-    display: block;
-    margin: 0 auto;
-    background: rgb(209, 255, 209);
-    &:hover {
-      background: rgb(182, 255, 182);
-    }
-  }
-  .allow-start-btn {
-    display: block;
-    margin: 0 auto;
-    margin-bottom: 10px;
   }
 }

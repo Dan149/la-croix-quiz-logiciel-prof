@@ -80,43 +80,43 @@ const VoteLikeDisplay = () => {
             <div className="question-votes-container">
               {votesData.length !== 0
                 ? votesData[currentQuestionId].map(
-                    (votes: number, index: number) =>
-                      questionsData[currentQuestionId].possibleAnswers.length >
+                  (votes: number, index: number) =>
+                    questionsData[currentQuestionId].possibleAnswers.length >
                       index ? (
-                        <div className="votes-card" key={index}>
-                          <div className="amount-holder">
-                            <div
-                              className="amount"
-                              id={
-                                showValidAnswer
-                                  ? questionsData[currentQuestionId]
-                                      .validAnswer == index
-                                    ? "valid"
-                                    : "invalid"
-                                  : ""
-                              }
-                              style={{
-                                height: `${(votes / usersData.length) * 100}%`,
-                              }}
-                            >
-                              {" "}
-                              <span className="number">
-                                {votes !== 0 ? votes : ""}
-                              </span>{" "}
-                            </div>
-                          </div>
-                          <h5 id={showValidAnswer ? "" : `n${index}`}>
-                            {
-                              questionsData[currentQuestionId].possibleAnswers[
-                                index
-                              ]
+                      <div className="votes-card" key={index}>
+                        <div className="amount-holder">
+                          <div
+                            className="amount"
+                            id={
+                              showValidAnswer
+                                ? questionsData[currentQuestionId]
+                                  .validAnswer == index
+                                  ? "valid"
+                                  : "invalid"
+                                : ""
                             }
-                          </h5>
+                            style={{
+                              height: `${(votes / usersData.length) * 100}%`,
+                            }}
+                          >
+                            {" "}
+                            <span className="number">
+                              {votes !== 0 ? votes : ""}
+                            </span>{" "}
+                          </div>
                         </div>
-                      ) : (
-                        ""
-                      )
-                  )
+                        <h5 id={showValidAnswer ? "" : `n${index}`}>
+                          {
+                            questionsData[currentQuestionId].possibleAnswers[
+                            index
+                            ]
+                          }
+                        </h5>
+                      </div>
+                    ) : (
+                      ""
+                    )
+                )
                 : "Chargement..."}
             </div>
             <button
@@ -135,11 +135,10 @@ const VoteLikeDisplay = () => {
     </div>
   ) : (
     <button
-      className="vote-like-display-btn btn"
       onClick={async () => {
         setShowUsersData(true);
         setShowValidAnswer(false);
-        await fetchUsersData();
+        fetchUsersData();
         fetchQuestionsData();
         setFetchingUsersDataInterval();
       }}
