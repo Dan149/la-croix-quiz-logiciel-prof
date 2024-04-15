@@ -12,19 +12,19 @@ const VoteLikeDisplay = () => {
   const fetchUsersDataInterval: any = useRef(null);
 
   const fetchUsersData = () => {
-    window.api.getUsersData(async (event: void, APIUsersData: any) => {
-      await setUsersData(APIUsersData);
+    window.api.getUsersData((_event: void, APIUsersData: any) => {
+      setUsersData(APIUsersData);
     });
   };
 
   const fetchQuestionsData = async () => {
-    await window.api.getQuizJSON(async (event: void, JSONFile: string) => {
+    await window.api.getQuizJSON(async (_event: void, JSONFile: string) => {
       await setQuestionsData(JSON.parse(JSONFile));
     });
   };
 
   const fetchVotesData = () => {
-    window.api.getVotesData(async (event: void, votesAPIData: any) => {
+    window.api.getVotesData(async (_event: void, votesAPIData: any) => {
       await setVotesData(votesAPIData);
     });
   };
@@ -124,7 +124,7 @@ const VoteLikeDisplay = () => {
               onClick={() => setShowValidAnswer(!showValidAnswer)}
             >
               {showValidAnswer
-                ? "Cacher la bonne réponse"
+                ? "Masquer la bonne réponse"
                 : "Afficher la bonne réponse"}
             </button>
           </div>
@@ -135,6 +135,7 @@ const VoteLikeDisplay = () => {
     </div>
   ) : (
     <button
+      id="action"
       onClick={async () => {
         setShowUsersData(true);
         setShowValidAnswer(false);

@@ -77,7 +77,7 @@ const UserDataDisplay = () => {
                 <li>
                   <span>Note:</span>{" "}
                   {`${user.answersValidity.filter((value: boolean) => value)
-                      .length
+                    .length
                     }/${user.answersValidity.length}`}
                 </li>
                 <li>
@@ -97,6 +97,7 @@ const UserDataDisplay = () => {
     </div>
   ) : (
     <button
+      id="action"
       onClick={() => {
         setShowUserData(true);
         fetchUsersData();

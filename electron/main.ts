@@ -55,21 +55,22 @@ let leftUserNames: UserNamesRules | undefined; // Left user names to choose from
 type UserNamesRules = [
   // type of array containing the available user names, this data is acquired by reading a .csv file.
   {
-    nom: string;
-    prenom: string;
+    nom: string,
+    prenom: string,
+    password: string | undefined,
   }
 ];
 
 type UserData = {
   // Type of the elements of the usersData array.
-  nom: string;
-  prenom: string;
-  id: number;
-  answersValidity: Array<boolean>; // array of bool
-  hasFinished: boolean; // quiz finished or not
+  nom: string,
+  prenom: string,
+  id: number,
+  answersValidity: Array<boolean>, // array of bool
+  hasFinished: boolean, // quiz finished or not
   // security:
-  clientIP: string;
-  sessionId: string;
+  clientIP: string,
+  sessionId: string,
 };
 
 // Checks if the app folder exists in the Documents, if it doesn't, creates it:
@@ -195,7 +196,7 @@ const startQuizAPIServer = () => {
       res.send(false);
     }
   });
-  APIServer.get("/session-time", (req: any, res: any) => {
+  APIServer.get("/session-time", (_req: any, res: any) => {
     res.json(sessionTime);
   });
   APIServer.post("/get-question", (req: any, res: any) => {
@@ -244,7 +245,7 @@ const startQuizAPIServer = () => {
         )
       ) {
         if (globalUserNamesRules !== undefined) { // seen as user name selection on the client side.
-          if (isStrictUserNameValid(req.body.nom, req.body.prenom)) {
+          if (isStrictUserNameValid(req.body.nom, req.body.prenom, req.body.password)) {
             leftUserNames = leftUserNames.filter(
               // Stupid TS server error...
               (userName: any) =>
@@ -287,10 +288,10 @@ const startQuizAPIServer = () => {
       });
     }
   });
-  APIServer.get("/get-strict-usernames", (req: any, res: any) => {
+  APIServer.get("/get-strict-usernames", (_req: any, res: any) => {
     res.send(leftUserNames);
   });
-  APIServer.get("*", (req: any, res: any) => {
+  APIServer.get("*", (_req: any, res: any) => {
     res.redirect("/");
   });
   runningAPIServer = APIServer.listen(port, () => {
@@ -414,7 +415,7 @@ const exportUsersDataToCSV = () => {
       { id: "note", title: "Note" },
     ],
   });
-  writer.writeRecords(filteredUsersData).then((out: void, err: any) => {
+  writer.writeRecords(filteredUsersData).then((_out: void, err: any) => {
     if (!err) {
       sendNotification(
         createNewNotification(
@@ -444,11 +445,11 @@ const readUserNamesRulesFromCSV = async () => {
   return globalUserNamesRules;
 };
 
-const isStrictUserNameValid = (nom: string, prenom: string) => {
+const isStrictUserNameValid = (nom: string, prenom: string, password:string|undefined) => {
   if (leftUserNames !== undefined) {
     return (
       leftUserNames.find((userName) => {
-        return userName.nom === nom && userName.prenom === prenom;
+        return userName.nom === nom && userName.prenom === prenom && (userName.password === password || (userName.password == undefined && password == ""));
       }) !== undefined
     ); // Checks if user name is choosable.
   }
@@ -482,7 +483,7 @@ async function createWindow() {
     webContents.send("receive-app-version", app.getVersion());
   });
 
-  ipcMain.on("set-session-type", (event, sessiontype) => {
+  ipcMain.on("set-session-type", (_event, sessiontype) => {
     sessionType = sessiontype;
     webContents.send("receive-session-type", sessionType);
   });
@@ -491,7 +492,7 @@ async function createWindow() {
     webContents.send("receive-session-type", sessionType);
   });
 
-  ipcMain.on("export-quiz-JSON", (event, JSONString: string) => {
+  ipcMain.on("export-quiz-JSON", (_event, JSONString: string) => {
     if (!isDialogWithFileImportOpen) {
       isDialogWithFileImportOpen = true;
       dialog
@@ -642,7 +643,7 @@ async function createWindow() {
   });
   // Notification handling:
 
-  ipcMain.on("add-new-notification-to-pool", (event: any, params: any) => {
+  ipcMain.on("add-new-notification-to-pool", (_event: any, params: any) => {
     sendNotification(createNewNotification(params.title, params.message));
   });
 
@@ -656,7 +657,7 @@ async function createWindow() {
     webContents.send("receive-settings-string", JSON.stringify(settings));
   });
 
-  ipcMain.on("rewrite-settings", (event: any, settingsString: string) => {
+  ipcMain.on("rewrite-settings", (_event: any, settingsString: string) => {
     settings = JSON.parse(settingsString);
     saveSettingsToConfFile();
   });

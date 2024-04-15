@@ -6,7 +6,7 @@ const ServerIPDisplay = () => {
   const [selectedInterface, setSelectedInterface] = useState("")
 
   useEffect(() => {
-    window.api.getAvailableIPs((event: void, availableIPs: any) => {
+    window.api.getAvailableIPs((_event: void, availableIPs: any) => {
       setAvalaibleIPaddresses(availableIPs)
     })
   }, [])
@@ -41,7 +41,7 @@ const ServerIPDisplay = () => {
           </div>
         </div>
 
-      </div> : <button onClick={() => setShowServerIPDisplay(true)}>Afficher le lien du quiz</button>
+      </div> : <button id="action" onClick={() => setShowServerIPDisplay(true)}>Afficher le lien du quiz</button>
   );
 };
 

@@ -25,14 +25,14 @@ const ImportUsersRules = () => {
         <ul>
           <li>
             Le fichier CSV doit contenir une colonne "nom" et une autre
-            "prenom".
+            "prenom". Il peut contenir une colonne "password" optionnelle, pour assigner un mot de passe à chaque élève.
           </li>
           <li>Le séparateur doit être une virgule: ",".</li>
         </ul>
         {usersRules == undefined ? (
           <button
             onClick={() => {
-              window.api.setUsersRules((event: void, serverUsersRules: any) => {
+              window.api.setUsersRules((_event: void, serverUsersRules: any) => {
                 setUsersRules(serverUsersRules);
                 // console.log(serverUsersRules)
               });
@@ -48,11 +48,11 @@ const ImportUsersRules = () => {
             <li>Nom</li> <li>Prénom</li>
             {usersRules !== undefined
               ? usersRules.map((userRule: any, index: number) => (
-                  <>
-                    <li key={index}>{userRule["nom"]}</li>
-                    <li key={index + 1}>{userRule["prenom"]}</li>
-                  </>
-                ))
+                <>
+                  <li key={index}>{userRule["nom"]}</li>
+                  <li key={index + 1}>{userRule["prenom"]}</li>
+                </>
+              ))
               : ""}
           </ul>
         </div>

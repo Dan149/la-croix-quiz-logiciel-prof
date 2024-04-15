@@ -23,7 +23,7 @@ const QuizSession = (props: any) => { // filepath
   }
 
   const handleQuizAPIServerLogs = () => {
-    window.api.getQuizAPIServerStatus((event: void, realEvent: any) => {
+    window.api.getQuizAPIServerStatus((_event: void, realEvent: any) => {
       setQuizAPIServerEvents((quizAPIServerEvents) => [...quizAPIServerEvents, realEvent])
     });
   }
@@ -64,8 +64,8 @@ const QuizSession = (props: any) => { // filepath
           </> : ""}
           {isAPIServerOn ? <>
             <ServerIPDisplay />
-            {!isQuizStartAllowed ? <button onClick={() => allowQuizStart()} >Autoriser le début du quiz</button> : ""}</> : ""}
-          {isAPIServerOn ? <button onClick={() => handleQuizAPIServerStop()} className="close-btn">Fermer la session</button> : <button onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
+            {!isQuizStartAllowed ? <button onClick={() => allowQuizStart()} id="action">Autoriser le début du quiz</button> : ""}</> : ""}
+          {isAPIServerOn ? <button onClick={() => handleQuizAPIServerStop()} id="action" className="close-btn">Fermer la session</button> : <button onClick={() => handleQuizAPIServerStart()}>C'est parti !</button>}
         </div>
       </div>
     </div>

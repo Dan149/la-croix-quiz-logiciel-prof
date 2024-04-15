@@ -4,10 +4,17 @@
   top: 1rem;
   right: -400px;
   animation: popupAnim 1s ease forwards;
-  width: 300px;
+  width: 400px;
+
+  @media screen and (max-width:500px) {
+    width: 350px;
+  }
+
   height: 100px;
   background: white;
-  box-shadow: 5px 5px 16px #c7c7c7, -5px -5px 16px #f9f9f9;
+  box-shadow: 5px 5px 16px #c7c7c7,
+  -5px -5px 16px #f9f9f9;
+
   .content {
     display: grid;
     grid-template-rows: 15% 85%;
@@ -15,6 +22,7 @@
     position: relative;
     height: 100%;
     width: 100%;
+
     img {
       z-index: 1001;
       position: absolute;
@@ -25,19 +33,23 @@
       cursor: pointer;
       border: 1px solid black;
       border-radius: 1000px;
+
       &:hover {
         transform: scale(1.1) rotate(180deg);
         background: rgb(255, 154, 154);
       }
     }
+
     h2 {
       font-size: 1.2rem;
     }
+
     p {
       display: flex;
       align-items: center;
       justify-content: center;
     }
+
     span {
       position: absolute;
       bottom: 0.2rem;

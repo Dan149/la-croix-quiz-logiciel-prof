@@ -94,7 +94,7 @@
       box-shadow: 2px 2px 3px gray;
       width: fit-content;
 
-      button {
+      button#action {
         border: 0px;
         background: rgb(196, 196, 196);
         transition: 250ms ease;
@@ -107,7 +107,7 @@
       }
 
       .close-btn:hover {
-        background: rgb(255, 158, 158);
+        background: rgb(255, 158, 158) !important;
         color: red;
       }
     }
