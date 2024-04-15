@@ -68,6 +68,7 @@ type UserData = {
   id: number,
   answersValidity: Array<boolean>, // array of bool
   hasFinished: boolean, // quiz finished or not
+  openedFiles: string[], // array of shared files opened by user 
   // security:
   clientIP: string,
   sessionId: string,
@@ -147,6 +148,7 @@ APIServer.use(
   express.static(`${userQuizDataFolderPath}/partage`),
   serveIndex(`${userQuizDataFolderPath}/partage`, {
     icons: true,
+    template: path.join(process.env.VITE_PUBLIC, "/directory.html"),
   })
 ); // shared folder
 
@@ -233,6 +235,18 @@ const startQuizAPIServer = () => {
       }
     }
   });
+
+  // monitoring shared files openings:
+
+  APIServer.post("/shared-file-opening", (req: any) => {
+    if (req.body.userId < usersData.length) {
+      usersData[req.body.userId].openedFiles.push(req.body.fileName);
+      console.log(usersData[req.body.userId].openedFiles)
+    }
+  })
+
+  //
+
   APIServer.post("/join-session", (req: any, res: any) => {
     const newUserId = usersData.length;
     let canCreateUser = false;
@@ -266,6 +280,7 @@ const startQuizAPIServer = () => {
           id: newUserId,
           answersValidity: new Array(parsedQuizJSONConfig.length), // array of bool
           hasFinished: false, // quiz finished or not
+          openedFiles: [],
           // security:
           clientIP: req.socket.remoteAddress,
           sessionId: req.session.id,
