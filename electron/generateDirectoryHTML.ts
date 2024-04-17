@@ -85,6 +85,31 @@ const generateDirectoryHTML = (style: string, directory: string, linkedPath: str
     <h1><a href="/">~</a>${linkedPath}</h1>
     ${files}
   </div>
+  <script>
+    const getCookie = (name) => {
+      var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      if (match) return match[2];
+    }
+
+    const userId = JSON.parse(getCookie("userData").replaceAll("%22", '"').replaceAll("%2C", ",")).id;
+    const links = document.querySelectorAll("a");
+    const activeListeners = [];
+    links.forEach((link, index)=>{
+      activeListeners.push(true);
+      link.addEventListener('click', (e)=>{
+        if (activeListeners[index]) {
+          activeListeners[index] = false;
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "http://*:3333/register-file-opening".replace("*", location.hostname), true);
+          xhr.setRequestHeader('Content-Type', 'application/json');
+          xhr.send(JSON.stringify({
+              userId, file: e.target.innerHTML
+          }));
+}
+});
+});
+</script>
 </body>
 
 </html>

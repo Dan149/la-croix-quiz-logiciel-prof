@@ -118,6 +118,30 @@ const sendNotification = (notification: any) => {
   }
 };
 
+// file handling for the shared folder:
+
+const getFiles = (dir: string, files: any = []) => {
+  const fileList = fs.readdirSync(dir);
+  for (const file of fileList) {
+    const name = `${dir}/${file}`;
+    if (fs.statSync(name).isDirectory()) {
+      getFiles(name).forEach((file: string) => files.push(file));
+    } else {
+      files.push(name);
+    }
+  }
+  return files;
+}
+
+const formatFileArrayToHTML = (files: [], hostname: string) => {
+  const formatedFileArray: any = [];
+  files.forEach((file: string) => {
+    const fileName = file.split("partage/")[file.split("partage/").length - 1];
+    formatedFileArray.push(`<li><a href="http://${hostname}:3333/partage/${fileName}">${fileName}</a></li>`)
+  });
+  return `<ul id="files">${formatedFileArray.toString().replaceAll(",", " ")}</ul>`;
+}
+
 // API server init:
 
 const APIServer = express();
@@ -136,10 +160,12 @@ APIServer.use(
     saveUninitialized: true,
   })
 );
+
 APIServer.use(express.static(path.join(process.env.VITE_PUBLIC, "/client")));
 if (!fs.existsSync(`${userQuizDataFolderPath}/partage`)) {
   fs.mkdir(`${userQuizDataFolderPath}/partage`, (err: any) => console.log(err));
 }
+// shared folder setup:
 APIServer.use(
   "/partage",
   express.static(`${userQuizDataFolderPath}/partage`), (req: any, res: any) => {
@@ -154,10 +180,10 @@ APIServer.use(
 
       });
     } else {
-      res.redirect(401, "/");
+      res.redirect("/");
     }
   }
-); // shared folder
+);
 
 const usersData: UserData[] = [];
 const votesData: any = []; // items: votes array (for each question)
@@ -176,35 +202,12 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
     } else {
       winWebContents.send("get-quiz-API-server-status", {
         type: "erreur",
-        message: `Authentification utilisateur échouée, suspicion de triche sur le poste ${clientIP} !`,
+        message: `Authentification utilisateur échouée sur le poste ${clientIP} !`,
       });
       return false;
     }
   }
 };
-
-const getFiles = (dir: string, files: any = []) => {
-  const fileList = fs.readdirSync(dir)
-  for (const file of fileList) {
-    const name = `${dir}/${file}`
-    if (fs.statSync(name).isDirectory()) {
-      // getFiles(name, files)
-      files.push(name);
-    } else {
-      files.push(name);
-    }
-  }
-  return files
-}
-
-const formatFileArrayToHTML = (files: [], hostname: string) => {
-  const formatedFileArray: any = []
-  files.forEach((file: string) => {
-    const fileName = file.split("partage/")[file.split("partage/").length - 1]
-    formatedFileArray.push(`<a href="http://${hostname}:3333/partage/${fileName}">${fileName}</a>`)
-  });
-  return formatedFileArray;
-}
 
 const initVotesData = () => {
   votesData.length = 0;
@@ -268,10 +271,9 @@ const startQuizAPIServer = () => {
 
   // monitoring shared files openings:
 
-  APIServer.post("/shared-file-opening", (req: any) => {
+  APIServer.post("/register-file-opening", (req: any) => {
     if (req.body.userId < usersData.length) {
-      usersData[req.body.userId].openedFiles.push(req.body.fileName);
-      console.log(usersData[req.body.userId].openedFiles)
+      usersData[req.body.userId].openedFiles.push(req.body.file);
     }
   })
 
