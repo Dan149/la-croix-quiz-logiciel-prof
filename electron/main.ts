@@ -1,10 +1,7 @@
-// Hey !  if you read this it means that you probably maintain the project!
-// So, some clarifications:
-// - I wrote the comments in english instead of french because that's what developers do, and while it might just be a school project, it is still important to have that skill, so good luck understanding it all if you are a frenchie ;)
-// - I don't think that I'll maintain the project on the long run, but if you have questions feel free to write me an email at danfaldev@gmail.com.
-//
-// Sincerely yours,
-// Daniel.
+// Avis au lecteur francophone:
+//    Les commentaires de ce logiciel sont rédigés en anglais, par souci de normalisation internationale.
+//    Si besoin, il est possible de me joindre au mail: danfaldev@gmail.com
+
 import { app, BrowserWindow, ipcMain } from "electron";
 import expressSession from "express-session";
 import path from "node:path";
@@ -12,9 +9,9 @@ import crypto from "crypto";
 import { networkInterfaces } from "os";
 import fs from "node:fs";
 import express from "express";
+import generateDirectoryHTML from "./generateDirectoryHTML"; // blunt copy of serve-index
 const { dialog } = require("electron");
 const cors: any = require("cors");
-const serveIndex: any = require("serve-index");
 const csvWriter = require("csv-writer")
 const csvToObj = require("csv-to-js-parser").csvToObj;
 
@@ -145,11 +142,21 @@ if (!fs.existsSync(`${userQuizDataFolderPath}/partage`)) {
 }
 APIServer.use(
   "/partage",
-  express.static(`${userQuizDataFolderPath}/partage`),
-  serveIndex(`${userQuizDataFolderPath}/partage`, {
-    icons: true,
-    template: path.join(process.env.VITE_PUBLIC, "/directory.html"),
-  })
+  express.static(`${userQuizDataFolderPath}/partage`), (req: any, res: any) => {
+    if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
+      fs.readFile(path.join(process.env.VITE_PUBLIC, "/directory-style.css"), 'utf8', (err: any, stylesheet: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        const files = formatFileArrayToHTML(getFiles(`${userQuizDataFolderPath}/partage`), req.hostname);
+        res.send(generateDirectoryHTML(stylesheet, "partage", `<a href="${req.hostname}:3333/partage">/partage</a>`, files));
+
+      });
+    } else {
+      res.redirect(401, "/");
+    }
+  }
 ); // shared folder
 
 const usersData: UserData[] = [];
@@ -175,6 +182,29 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
     }
   }
 };
+
+const getFiles = (dir: string, files: any = []) => {
+  const fileList = fs.readdirSync(dir)
+  for (const file of fileList) {
+    const name = `${dir}/${file}`
+    if (fs.statSync(name).isDirectory()) {
+      // getFiles(name, files)
+      files.push(name);
+    } else {
+      files.push(name);
+    }
+  }
+  return files
+}
+
+const formatFileArrayToHTML = (files: [], hostname: string) => {
+  const formatedFileArray: any = []
+  files.forEach((file: string) => {
+    const fileName = file.split("partage/")[file.split("partage/").length - 1]
+    formatedFileArray.push(`<a href="http://${hostname}:3333/partage/${fileName}">${fileName}</a>`)
+  });
+  return formatedFileArray;
+}
 
 const initVotesData = () => {
   votesData.length = 0;
