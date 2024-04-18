@@ -1,0 +1,20 @@
+.shared-files-opened-by-user-container {
+  .file-list {
+    min-height: 20px;
+    border: 1px solid black;
+    margin: 5px 0;
+
+    li {
+      font-size: 0.7rem;
+      list-style-type: disc;
+      padding: 3px 0;
+    }
+  }
+
+  a {
+    color: blue;
+    text-decoration: underline;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+}

@@ -252,6 +252,7 @@ const startQuizAPIServer = () => {
       }
     }
   });
+
   APIServer.post("/register-user-answer-validity", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       try {
@@ -273,7 +274,7 @@ const startQuizAPIServer = () => {
 
   APIServer.post("/register-file-opening", (req: any) => {
     if (req.body.userId < usersData.length) {
-      usersData[req.body.userId].openedFiles.push(req.body.file);
+      if (!usersData[req.body.userId].openedFiles.includes(req.body.file)) usersData[req.body.userId].openedFiles.push(req.body.file);
     }
   })
 
@@ -325,7 +326,7 @@ const startQuizAPIServer = () => {
       } else {
         res.json({
           serverStatus: "error",
-          errorMessage: "L'utilisateur existe déjà. Veuillez changer le nom.",
+          errorMessage: "Mot de passe incorrect ou identifiant déjà utilisé.",
         });
       }
     } catch (err: any) {

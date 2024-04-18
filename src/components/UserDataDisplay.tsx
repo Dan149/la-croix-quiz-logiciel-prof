@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import SharedFilesOpenedByUser from "./SharedFilesOpenedByUser";
 
 const UserDataDisplay = () => {
   const [showUserData, setShowUserData] = useState(false);
@@ -91,6 +92,7 @@ const UserDataDisplay = () => {
                 </li>
               </ul>
             </div>
+            <SharedFilesOpenedByUser filesArray={user.openedFiles} />
           </div>
         ))}
       </div>
