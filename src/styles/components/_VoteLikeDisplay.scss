@@ -13,40 +13,30 @@
     position: relative;
     height: 100%;
 
-    .arrow-left {
+    .arrow {
       position: absolute;
-      left: 1rem;
       top: 50%;
-      height: 0;
-      width: 0;
-      border-top: 25px solid transparent;
-      border-right: 25px solid rgb(96, 84, 202);
-      border-bottom: 25px solid transparent;
-      transform: scale(0.8);
+      padding: 10px 8px;
+      font-weight: bolder;
+      background: rgba(0, 0, 0, 0.8);
+      border-radius: 3px;
+      font-size: 1rem;
+      color: white;
       transition: 500ms ease;
       cursor: pointer;
 
       &:hover {
-        transform: scale(0.9);
+        background: rgba(20, 20, 20, 0.8);
+        transform: scale(1.1);
       }
     }
 
-    .arrow-right {
-      position: absolute;
-      right: 1rem;
-      top: 50%;
-      height: 0;
-      width: 0;
-      border-top: 25px solid transparent;
-      border-bottom: 25px solid transparent;
-      border-left: 28px solid rgb(96, 84, 202);
-      transform: scale(0.8);
-      transition: 500ms ease;
-      cursor: pointer;
+    .arrow-left {
+      left: 1rem;
+    }
 
-      &:hover {
-        transform: scale(0.9);
-      }
+    .arrow-right {
+      right: 1rem;
     }
 
     .question-votes-view {

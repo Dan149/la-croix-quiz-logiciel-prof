@@ -53,23 +53,23 @@ const VoteLikeDisplay = () => {
       <div className="vote-like-display-container">
         {currentQuestionId >= 1 ? (
           <span
-            className="arrow-left"
+            className="arrow-left arrow"
             onClick={() => {
               setCurrentQuestionId(currentQuestionId - 1);
               setShowValidAnswer(false);
             }}
-          ></span>
+          >{"<"}</span>
         ) : (
           ""
         )}
         {currentQuestionId <= questionsData.length - 2 ? (
           <span
-            className="arrow-right"
+            className="arrow-right arrow"
             onClick={() => {
               setCurrentQuestionId(currentQuestionId + 1);
               setShowValidAnswer(false);
             }}
-          ></span>
+          >{">"}</span>
         ) : (
           ""
         )}
