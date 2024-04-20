@@ -35,11 +35,16 @@
       }
     }
 
-    button {
-      padding: 5px 0;
-      width: 160px;
-      display: block;
-      margin: 3rem auto;
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 10px 0;
+
+      button {
+        width: 250px
+      }
     }
 
     .users-rules-display {

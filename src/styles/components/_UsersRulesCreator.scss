@@ -1,0 +1,103 @@
+@use "../mixins";
+
+.users-rules-creator-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: white;
+  border-radius: 10px;
+  overflow-y: hidden;
+  z-index: 2000;
+  padding-top: 50px;
+
+  input[type="checkbox"] {
+    margin: 0 10px;
+  }
+
+  .rules-editor-container {
+    display: block;
+    margin: 1rem auto;
+    width: clamp(400px, 90%, 600px);
+
+    .menu-bar {
+      display: flex;
+      justify-content: start;
+      align-items: center;
+
+      button {
+        width: 180px;
+        border: 0px;
+        background: rgb(196, 196, 196);
+        transition: 250ms ease;
+        padding: 5px;
+
+        &:hover {
+          background: rgb(241, 241, 241);
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .editor {
+      border: 1px solid gray;
+      border-radius: 0 10px 10px 10px;
+      height: 350px;
+      overflow-y: scroll;
+      @include mixins.BasicComponentScrollbar;
+
+      .users-rules-list {
+
+        // ul
+        li {
+          display: grid;
+          align-items: center;
+          grid-template-columns: 1fr;
+          transition: 500ms ease;
+          margin: 0;
+          padding: 0.5rem;
+
+          &:hover {
+            background: rgb(240, 240, 240);
+          }
+
+          .password {
+            user-select: none;
+            color: black;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            background: rgb(210, 210, 210);
+            border-radius: 3px;
+            box-shadow: 2px 2px 3px gray;
+            padding: 0.1rem 0.3rem;
+            cursor: pointer;
+          }
+
+          .hidden {
+            background: black;
+          }
+        }
+      }
+
+      form {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.2rem;
+        flex-direction: column;
+
+        label {
+          font-size: 0.8rem;
+        }
+
+        input[type="submit"] {
+          margin-top: 0.5rem;
+          cursor: pointer;
+        }
+      }
+    }
+  }
+
+  @include mixins.BackButton;
+}

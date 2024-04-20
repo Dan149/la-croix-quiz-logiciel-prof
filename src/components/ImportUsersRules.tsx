@@ -1,4 +1,5 @@
 import { useState } from "react";
+import UsersRulesCreator from "./UsersRulesCreator";
 
 const ImportUsersRules = () => {
   const [showImportUsersRules, setShowImportUsersRules] = useState(false);
@@ -30,16 +31,20 @@ const ImportUsersRules = () => {
           <li>Le séparateur doit être une virgule: ",".</li>
         </ul>
         {usersRules == undefined ? (
-          <button
-            onClick={() => {
-              window.api.setUsersRules((_event: void, serverUsersRules: any) => {
-                setUsersRules(serverUsersRules);
-                // console.log(serverUsersRules)
-              });
-            }}
-          >
-            Importer un fichier
-          </button>
+          <div className="actions">
+            <UsersRulesCreator />
+            <button
+              className="btn"
+              onClick={() => {
+                window.api.setUsersRules((_event: void, serverUsersRules: any) => {
+                  setUsersRules(serverUsersRules);
+                  // console.log(serverUsersRules)
+                });
+              }}
+            >
+              Importer un fichier
+            </button>
+          </div>
         ) : (
           ""
         )}
