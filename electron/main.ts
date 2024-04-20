@@ -42,7 +42,7 @@ let quizJSONConfig: string = ""; // JSON string of the previous file.
 let parsedQuizJSONConfig: any = {}; // Object of the previous JSON var.
 let QuizAPIServerPort: number = 3333; // Port on which the server runs.
 let winWebContents: any = null; // webContents to use outside the window declaration, when it is already set.
-let isDialogWithFileImportOpen: boolean = false; // Bool to avoid opening multiple file managers in the same time.
+let isDialogWithFileOpen: boolean = false; // Bool to avoid opening multiple file managers in the same time.
 let sessionTime: any; // The time on which the session was started, used to deauthenticate the clients of older sessions.
 let settings: any = staticSettingsConfig; // Settings of the app, set by default then mutated to user ones.
 let globalUserNamesRules: UserNamesRules | undefined = undefined; // Holds the allowed students' names and surnames.
@@ -480,8 +480,8 @@ const exportUsersDataToCSV = () => {
 // Read strict student names rules from .CSV file:
 
 const readUserNamesRulesFromCSV = async () => {
-  if (!isDialogWithFileImportOpen) {
-    isDialogWithFileImportOpen = true;
+  if (!isDialogWithFileOpen) {
+    isDialogWithFileOpen = true;
     const res = await dialog.showOpenDialog({
       properties: ["openFile"],
       filters: [{ name: "fichier CSV", extensions: ["csv"] }],
@@ -490,7 +490,7 @@ const readUserNamesRulesFromCSV = async () => {
       const data = fs.readFileSync(res.filePaths[0]).toString();
       globalUserNamesRules = leftUserNames = csvToObj(data);
     }
-    isDialogWithFileImportOpen = false;
+    isDialogWithFileOpen = false;
   }
   return globalUserNamesRules;
 };
@@ -543,8 +543,8 @@ async function createWindow() {
   });
 
   ipcMain.on("export-quiz-JSON", (_event, JSONString: string) => {
-    if (!isDialogWithFileImportOpen) {
-      isDialogWithFileImportOpen = true;
+    if (!isDialogWithFileOpen) {
+      isDialogWithFileOpen = true;
       dialog
         .showSaveDialog({
           filters: [{ name: "fichier JSON", extensions: ["json"] }],
@@ -584,20 +584,20 @@ async function createWindow() {
               }
             });
           }
-          isDialogWithFileImportOpen = false;
+          isDialogWithFileOpen = false;
         })
         .catch((err: any) => {
           sendNotification(
             createNewNotification("Erreur lors de l'export.", err)
           );
-          isDialogWithFileImportOpen = false;
+          isDialogWithFileOpen = false;
         });
     }
   });
 
   ipcMain.on("import-json-quiz-file", () => {
-    if (!isDialogWithFileImportOpen) {
-      isDialogWithFileImportOpen = true;
+    if (!isDialogWithFileOpen) {
+      isDialogWithFileOpen = true;
       dialog
         .showOpenDialog({
           properties: ["openFile"],
@@ -629,7 +629,7 @@ async function createWindow() {
               }
             );
           }
-          isDialogWithFileImportOpen = false;
+          isDialogWithFileOpen = false;
         });
     }
   });
@@ -717,6 +717,53 @@ async function createWindow() {
   ipcMain.on("export-users-data-to-csv", () => {
     if (usersData.length > 0) {
       exportUsersDataToCSV();
+    }
+  });
+
+  // export strict users names rules to a CSV file:
+
+  ipcMain.on("export-users-names-rules-to-csv", (_event: any, usersNamesRulesArray: any[]) => {
+    const header = usersNamesRulesArray[0].password == undefined ? [{ id: "nom", title: "nom" }, { id: "prenom", title: "prenom" }] : [{ id: "nom", title: "nom" }, { id: "prenom", title: "prenom" }, { id: "password", title: "password" }];
+    if (!isDialogWithFileOpen) {
+      isDialogWithFileOpen = true;
+      dialog
+        .showSaveDialog({
+          filters: [{ name: "fichier CSV", extensions: ["csv"] }],
+        })
+        .then((res: any) => {
+          if (res.filePath !== undefined && res.filePath !== "") {
+            let exportFilePath: string;
+            if (res.filePath.split(".").length === 1) {
+              exportFilePath = res.filePath + ".csv";
+            } else {
+              if (
+                res.filePath.split(".")[res.filePath.split(".").length - 1] ===
+                "csv"
+              ) {
+                exportFilePath = res.filePath;
+              } else {
+                exportFilePath = res.filePath + ".csv";
+              }
+            }
+            const writer = csvWriter.createObjectCsvWriter({
+              path: exportFilePath,
+              header,
+            });
+            writer.writeRecords(usersNamesRulesArray).then((_out: void, err: any) => {
+              if (!err) {
+                sendNotification(
+                  createNewNotification(
+                    "Fichier de noms stricts créé",
+                    `Données exportées dans le fichier: ${exportFilePath}.`
+                  )
+                );
+              }
+            });
+
+          }
+        }
+        );
+      isDialogWithFileOpen = false;
     }
   });
 

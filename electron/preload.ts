@@ -104,4 +104,7 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("set-users-rules");
     ipcRenderer.on("receive-users-rules", callback);
   },
+  exportUsersNamesRulesToCSV: (usersNamesRulesArray: any[]) => {
+    ipcRenderer.send("export-users-names-rules-to-csv", usersNamesRulesArray);
+  },
 });

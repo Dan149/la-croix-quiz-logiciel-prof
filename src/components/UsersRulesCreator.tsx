@@ -24,7 +24,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
     }
 
     const handleCSVFileSave = () => {
-        // communication with main process here
+        window.api.exportUsersNamesRulesToCSV(strictUserNamesArray);
     }
 
     return (displayComponent ? <div className="users-rules-creator-container">
@@ -35,6 +35,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
             className="back-btn"
             onClick={() => {
                 setDisplayComponent(false);
+                setStrictUserNamesArray([]);
             }}
         />
         {strictUserNamesArray.length == 0 ?
@@ -74,7 +75,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
                 </form> : ""}
             </div>
         </div>
-    </div> : <button className="btn" onClick={() => setDisplayComponent(true)}>Créer un fichier de configuration</button>);
+    </div> : <button className="btn" onClick={() => setDisplayComponent(true)}>Ouvrir l'éditeur intégré</button>);
 
 }
 
