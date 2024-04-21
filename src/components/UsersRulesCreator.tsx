@@ -23,6 +23,10 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
         setShowNewUserInputField(false);
     }
 
+    const removeUserRule = (index: number) => {
+        setStrictUserNamesArray(strictUserNamesArray.filter((_rule, i: number) => i != index));
+    }
+
     const handleCSVFileSave = () => {
         window.api.exportUsersNamesRulesToCSV(strictUserNamesArray);
     }
@@ -58,18 +62,19 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
                                 {usePasswords ?
                                     <span className="password hidden" title="Afficher le mot de passe" onClick={(e: any) => e.target.classList.toggle("hidden")}>{userRule.password}</span> : ""
                                 }
+                                <img src="./img/remove.svg" onClick={() => removeUserRule(index)} />
                             </li>
                         ))
                     }
                 </ul>
                 {showNewUserInputField ? <form onSubmit={handleNewUserSubmit}>
                     <label htmlFor="nom">Nom:</label>
-                    <input type="text" placeholder="Entrer un nom." id="nom" />
+                    <input type="text" minLength={1} maxLength={20} pattern="^[a-zA-Zéàèç]+$" placeholder="Entrer un nom." id="nom" required />
                     <label htmlFor="prenom">Prénom:</label>
-                    <input type="text" placeholder="Entrer un prénom." id="prenom" />
+                    <input type="text" minLength={3} maxLength={20} pattern="^[a-zA-Zéàèç]+$" placeholder="Entrer un prénom." id="prenom" required />
                     {usePasswords ? <>
                         <label htmlFor="password">Mot de passe:</label>
-                        <input type="password" placeholder="Entrer un mot de passe." id="password" />
+                        <input type="password" minLength={4} maxLength={20} placeholder="Entrer un mot de passe." id="password" required />
                     </> : ""}
                     <input type="submit" value="Ajouter" className="btn" />
                 </form> : ""}
