@@ -697,10 +697,6 @@ async function createWindow() {
     sendNotification(createNewNotification(params.title, params.message));
   });
 
-  ipcMain.on("call-current-notification-removal", () => {
-    webContents.send("remove-current-notification", null);
-  });
-
   // Settings handling:
 
   ipcMain.on("get-settings-string", () => {

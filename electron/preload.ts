@@ -75,12 +75,6 @@ contextBridge.exposeInMainWorld("api", {
   listenToNewNotifications: (callback: any) => {
     ipcRenderer.on("receive-notification", callback);
   },
-  callForCurrentNotificationRemoval: () => {
-    ipcRenderer.send("call-current-notification-removal");
-  },
-  listenToCallForCurrentNotificationRemoval: (callback: any) => {
-    ipcRenderer.on("remove-current-notification", callback);
-  },
   // Settings:
   getSettingsString: (callback: any) => {
     ipcRenderer.send("get-settings-string");
