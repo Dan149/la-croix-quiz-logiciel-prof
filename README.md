@@ -6,7 +6,7 @@
 
 ---
 
-### Fonctionnement
+### Connexion
 
 Le professeur lance le logiciel à partir de son ordinateur, les élèves peuvent dès le lancement du serveur par le biais du logiciel rejoindre la session de quiz en cours à partir d'un navigateur web sur l'addresse ip du professeur au port 3333:
 
