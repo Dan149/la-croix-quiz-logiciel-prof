@@ -147,6 +147,10 @@ body.dark {
     &:focus {
       border-bottom: 2px solid skyblue;
       color: black;
+
+      &::placeholder {
+        color: rgb(70, 70, 70);
+      }
     }
   }
 

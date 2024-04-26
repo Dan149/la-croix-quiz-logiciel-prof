@@ -710,6 +710,7 @@ async function createWindow() {
   ipcMain.on("rewrite-settings", (_event: any, settingsString: string) => {
     settings = JSON.parse(settingsString);
     saveSettingsToConfFile();
+    win?.reload();
   });
 
   // CSV users data export:

@@ -11,10 +11,6 @@ const NotificationManager = () => {
     setTimeout(() => {
       setCurrentNotification(notificationPool.current.shift())
     }, 1000)
-    console.log(currentNotification);
-
-    console.log(notificationPool);
-
   }
 
   useEffect(() => {
