@@ -7,9 +7,8 @@
   place-items: center;
   top: 0;
   bottom: 0;
-  right: -550px;
   width: clamp(300px, 40vw, 400px);
-  background: rgb(190, 190, 190);
+  background: rgba(190, 190, 190, 0.95);
   transition: 1s ease-in-out;
 
   .notification-pool {
@@ -95,7 +94,6 @@
   width: 2.2rem;
   position: absolute;
   top: 0;
-  right: 0;
   margin: 0.5rem;
   border: 1px solid black;
   border-radius: 100px;

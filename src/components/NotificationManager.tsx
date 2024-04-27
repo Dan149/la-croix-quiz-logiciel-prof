@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 const NotificationManager = () => {
   type LocalNotification = { title: string, message: string, time: string };
 
-  const [notificationPoolArray, setNotificationPoolArray] = useState<any>([]);
+  const [notificationPoolArray, setNotificationPoolArray] = useState<any[]>([]);
   const [showNotificationManager, setShowNotificationManager] = useState(false);
   const isListeningToNotifications = useRef(false)
 
@@ -15,16 +15,25 @@ const NotificationManager = () => {
     if (!isListeningToNotifications.current) {
       isListeningToNotifications.current = true
 
-      window.api.listenToNewNotifications(async (_event: void, newNotification: LocalNotification) => {
-        setNotificationPoolArray([...notificationPoolArray, newNotification])
+      window.api.listenToNewNotifications((_event: void, newNotification: LocalNotification) => {
+        if (!notificationPoolArray.includes(newNotification)) {
+          let push = true;
+          console.log("valid");
+          if (push) {
+            setNotificationPoolArray((notificationPoolArray) => [...notificationPoolArray, newNotification]);
+            push = false;
+          }
+        }
         isListeningToNotifications.current = false;
         // window.api.addNewNotificationToPool({ title: "Bienvenue !", message: "Bienvenue sur le logiciel de création de quiz LaCroixQuiz, faites un tour !" })
       });
     }
-  }, [isListeningToNotifications.current])
+  }, [])
 
-  return (showNotificationManager ?
-    <div style={showNotificationManager ? { right: "0px" } : { right: "-550px" }} className="notification-manager-sidebar">
+  useEffect(() => console.log(notificationPoolArray), [notificationPoolArray]);
+
+  return <>
+    <div className="notification-manager-sidebar" style={showNotificationManager ? { right: "0px" } : { right: "-550px" }}>
 
       <img
         src="./img/close.png"
@@ -45,8 +54,10 @@ const NotificationManager = () => {
           </li>
         )} {notificationPoolArray.length == 0 ? <h3 className="no-notif">Aucune notification.</h3> : ""}
       </ul>
-    </div> : <img src={notificationPoolArray.length == 0 ? "./img/notif.svg" : "./img/notif-unread.svg"} title="Afficher les notifications." onClick={() => setShowNotificationManager(true)} className="display-notifs-btn" />
-  );
+    </div>
+    <img src={notificationPoolArray.length == 0 ? "./img/notif.svg" : "./img/notif-unread.svg"} title="Afficher les notifications." onClick={() => setShowNotificationManager(true)} className="display-notifs-btn" style={showNotificationManager ? { right: "-50px" } : { right: "0px" }} draggable="false" />
+
+  </>
 };
 
 export default NotificationManager;

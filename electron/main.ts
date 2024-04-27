@@ -774,6 +774,7 @@ async function createWindow() {
 
   ipcMain.on("set-users-rules", async () => {
     const usersRules = await readUserNamesRulesFromCSV();
+    sendNotification(createNewNotification("Noms configurés", "Les noms des élèves ont été importés depuis le fichier."));
     webContents.send("receive-users-rules", usersRules);
   });
 
