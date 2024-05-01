@@ -69,9 +69,9 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
                 </ul>
                 {showNewUserInputField ? <form onSubmit={handleNewUserSubmit}>
                     <label htmlFor="nom">Nom:</label>
-                    <input type="text" minLength={1} maxLength={20} pattern="^[a-zA-Zéàèç]+$" placeholder="Entrer un nom." id="nom" required />
+                    <input type="text" minLength={1} maxLength={20} pattern="^[a-zA-Zéàèç ]+$" placeholder="Entrer un nom." id="nom" required />
                     <label htmlFor="prenom">Prénom:</label>
-                    <input type="text" minLength={3} maxLength={20} pattern="^[a-zA-Zéàèç]+$" placeholder="Entrer un prénom." id="prenom" required />
+                    <input type="text" minLength={3} maxLength={20} pattern="^[a-zA-Zéàèç ]+$" placeholder="Entrer un prénom." id="prenom" required />
                     {usePasswords ? <>
                         <label htmlFor="password">Mot de passe:</label>
                         <input type="password" minLength={4} maxLength={20} placeholder="Entrer un mot de passe." id="password" required />
