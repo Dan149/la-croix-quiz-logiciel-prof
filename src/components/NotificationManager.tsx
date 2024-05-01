@@ -16,13 +16,10 @@ const NotificationManager = () => {
       isListeningToNotifications.current = true
 
       window.api.listenToNewNotifications((_event: void, newNotification: LocalNotification) => {
-        if (!notificationPoolArray.includes(newNotification)) {
-          let push = true;
-          console.log("valid");
-          if (push) {
-            setNotificationPoolArray((notificationPoolArray) => [...notificationPoolArray, newNotification]);
-            push = false;
-          }
+        let push = true;
+        if (push) {
+          setNotificationPoolArray((notificationPoolArray) => [...notificationPoolArray, newNotification]);
+          push = false;
         }
         isListeningToNotifications.current = false;
         // window.api.addNewNotificationToPool({ title: "Bienvenue !", message: "Bienvenue sur le logiciel de création de quiz LaCroixQuiz, faites un tour !" })
