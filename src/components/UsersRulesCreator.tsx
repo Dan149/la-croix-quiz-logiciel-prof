@@ -51,7 +51,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
         <div className="rules-editor-container">
             <div className="menu-bar">
                 <button onClick={() => setShowNewUserInputField(true)}>Ajouter un utilisateur</button>
-                <button onClick={handleCSVFileSave}>Sauvegarder configuration</button>
+                {strictUserNamesArray.length > 0 ? <button onClick={handleCSVFileSave}>Sauvegarder configuration</button> : ""}
             </div>
             <div className="editor">
                 <ul className="users-rules-list">

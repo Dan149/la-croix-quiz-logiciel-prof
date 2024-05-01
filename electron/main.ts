@@ -697,10 +697,6 @@ async function createWindow() {
     sendNotification(createNewNotification(params.title, params.message));
   });
 
-  ipcMain.on("call-current-notification-removal", () => {
-    webContents.send("remove-current-notification", null);
-  });
-
   // Settings handling:
 
   ipcMain.on("get-settings-string", () => {
@@ -710,6 +706,7 @@ async function createWindow() {
   ipcMain.on("rewrite-settings", (_event: any, settingsString: string) => {
     settings = JSON.parse(settingsString);
     saveSettingsToConfFile();
+    win?.reload();
   });
 
   // CSV users data export:
@@ -777,6 +774,7 @@ async function createWindow() {
 
   ipcMain.on("set-users-rules", async () => {
     const usersRules = await readUserNamesRulesFromCSV();
+    sendNotification(createNewNotification("Noms configurés", "Les noms des élèves ont été importés depuis le fichier."));
     webContents.send("receive-users-rules", usersRules);
   });
 

@@ -1,4 +1,5 @@
 @use "./mixins";
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -6,14 +7,17 @@
   list-style-type: none;
   user-select: none;
 }
+
 body {
   background: rgb(245, 245, 245);
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
 }
+
 .btn {
   @include mixins.BasicButton;
 }
+
 button {
   cursor: pointer;
 }

@@ -28,18 +28,19 @@ body.dark {
     }
 
     main {
-      .notification-popup {
-        background: rgb(61, 61, 61);
-        box-shadow: 5px 5px 16px #373737, -5px -5px 16px #434343;
+      .notification-manager-sidebar {
+        background: rgba(80, 80, 80, 0.95);
 
-        .content {
-          img {
-            background: ghostwhite;
+        .notification-pool li {
+          background: rgb(120, 120, 120);
 
-            &:hover {
-              background: rgb(255, 180, 180);
-            }
+          span {
+            color: lightblue;
           }
+        }
+
+        .notification-pool .no-notif {
+          color: rgb(180, 180, 250);
         }
       }
 
@@ -146,6 +147,11 @@ body.dark {
 
     &:focus {
       border-bottom: 2px solid skyblue;
+      color: black;
+
+      &::placeholder {
+        color: rgb(70, 70, 70);
+      }
     }
   }
 
