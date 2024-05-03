@@ -27,7 +27,6 @@ const NotificationManager = () => {
     }
   }, [])
 
-  useEffect(() => console.log(notificationPoolArray), [notificationPoolArray]);
 
   return <>
     <div className="notification-manager-sidebar" style={showNotificationManager ? { right: "0px" } : { right: "-550px" }}>

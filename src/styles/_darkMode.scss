@@ -28,6 +28,18 @@ body.dark {
     }
 
     main {
+      .quiz-session-container {
+        .quiz-actions-flex {
+          button {
+            background: rgb(70, 70, 70);
+
+            &:hover {
+              background: rgb(100, 100, 100);
+            }
+          }
+        }
+      }
+
       .notification-manager-sidebar {
         background: rgba(80, 80, 80, 0.95);
 
@@ -135,7 +147,8 @@ body.dark {
     color: ghostwhite;
   }
 
-  input[type="text"] {
+  input[type="text"],
+  input[type="password"] {
     padding: 2px;
     border: 0;
     outline: none;
@@ -166,11 +179,42 @@ body.dark {
   }
 
   .show-import-users-rules {
-    color: black;
+    background: rgb(90, 90, 90);
+
+    .users-rules-display {
+
+      li:nth-child(1),
+      li:nth-child(2) {
+        color: black;
+      }
+    }
+
+    .users-rules-creator-container {
+      background: rgb(90, 90, 90);
+
+      input[type="submit"] {
+        box-shadow: none;
+      }
+
+      .users-rules-list>li {
+        &:hover {
+          background: rgb(110, 110, 110);
+        }
+
+        img {
+          background: ghostwhite;
+        }
+      }
+    }
   }
 
   .server-ip-display {
     color: black;
 
+    .ip-addr-container select {
+      &:hover {
+        background: rgb(100, 100, 100);
+      }
+    }
   }
 }

@@ -8,8 +8,12 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
         password?: string;
     }
 
+    const wordList = ["cheval", "taureau", "chien", "chat", "poisson", "lapin", "papillon", "animal", "oiseau", "fourmi", "tapir", "dragon", "abeille", "renard", "loup", "mouton", "bouc", "lama", "alpaga", "serpent", "anaconda", "python", "cobra", "tigre", "lion", "pingouin", "manchot", "panda", "corbeau", "licorne", "caribou", "coyotte", "lutin", "farfadet", "larve", "escargot", "tortue", "jaguar", "requin", "étoile", "kiwi", "crocodile", "aligator", "pangolin", "dromadaire", "bélouga", "orque", "saumon"]
+    const adjList = ["féroce", "magnifique", "courageux", "intelligent", "célèbre", "parfait", "sympa", "bon", "beau", "véloce", "furtif", "puissant", "sociable", "travailleur", "robuste", "bavard", "riche", "gentil", "fabuleux", "mystérieux", "énigmatique", "mystique", "marginal", "créateur", "artistique", "rapide", "agile", "artisanal", "ludique", "malicieux", "divertissant", "limpide", "instruit", "ponctuel", "parfumé", "charitable", "amical", "affamé", "patient", "gentilhomme", "galant", "protecteur", "chaleureux", "séduisant", "joli", "esthétique", "intéressant", "optimisé", "enjoué"]
+
     const [displayComponent, setDisplayComponent] = useState(false);
     const [usePasswords, setUsePasswords] = useState(false);
+    const [generatePasswords, setGeneratePasswords] = useState(false);
     const [strictUserNamesArray, setStrictUserNamesArray] = useState<UserRuleType[]>([]);
     const [showNewUserInputField, setShowNewUserInputField] = useState(false)
 
@@ -31,6 +35,10 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
         window.api.exportUsersNamesRulesToCSV(strictUserNamesArray);
     }
 
+    const generatePasswordString = () => {
+        return `${wordList[Math.floor(Math.random() * wordList.length)]}-${adjList[Math.floor(Math.random() * adjList.length)]}-${Math.floor(Math.random() * 100)}`
+    }
+
     return (displayComponent ? <div className="users-rules-creator-container">
         <img
             src="./img/back.svg"
@@ -44,8 +52,12 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
         />
         {strictUserNamesArray.length == 0 ?
             <>
-                <label htmlFor="enablePasswords">Configurer des mots de passes</label>
+                <label htmlFor="enablePasswords">Configurer des mots de passe</label>
                 <input id="enablePasswords" type="checkbox" onChange={(e: any) => setUsePasswords(e.target.checked)} />
+                {usePasswords ? <>
+                    <label htmlFor="generatePasswords">Générer les mots de passe automatiquement</label>
+                    <input id="generatePasswords" type="checkbox" onChange={(e: any) => setGeneratePasswords(e.target.checked)} />
+                </> : ""}
             </>
             : ""}
         <div className="rules-editor-container">
@@ -74,7 +86,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
                     <input type="text" minLength={3} maxLength={20} pattern="^[a-zA-Zéàèç ]+$" placeholder="Entrer un prénom." id="prenom" required />
                     {usePasswords ? <>
                         <label htmlFor="password">Mot de passe:</label>
-                        <input type="password" minLength={4} maxLength={20} placeholder="Entrer un mot de passe." id="password" required />
+                        <input type="password" minLength={4} maxLength={20} placeholder="Entrer un mot de passe." id="password" value={generatePasswords ? generatePasswordString() : ""} required />
                     </> : ""}
                     <input type="submit" value="Ajouter" className="btn" />
                 </form> : ""}

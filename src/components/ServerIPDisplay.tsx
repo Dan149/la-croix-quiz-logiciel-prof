@@ -21,7 +21,7 @@ const ServerIPDisplay = () => {
           <h4>Définissez l'interface réseau pour afficher le lien de connexion correspondant.</h4>
           <br />
           <p>Vérifiez vos paramètres de pare-feu et assurez vous que le port 3333 est ouvert au public.
-            <hr />
+            <br /> <br />
             Astuce: les interfaces sans fil se nomment souvent <strong>wlan</strong>.
           </p>
         </div>
