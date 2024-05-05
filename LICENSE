@@ -4,21 +4,21 @@ Licence du Logiciel LaCroixQuiz, valable pour toutes versions dudit logiciel.
 ATTENTION : VEUILLEZ LIRE ATTENTIVEMENT CE CONTRAT DE LICENCE AVANT D'UTILISER CE LOGICIEL. L'UTILISATION DE CE LOGICIEL INDIQUE VOTRE ACCEPTATION DE CES TERMES.
 
 1. Définitions :
-   a. "Logiciel" fait référence au programme informatique visé par cette licence.
+   a. "Logiciel" fait référence au programme informatique contenu dans le dépot git github.com/Dan149/la-croix-quiz-logiciel-prof.
    b. "Créateur Initial" fait référence à Daniel Falkov.
    c. "Utilisateur" désigne toute personne physique ou morale qui utilise le Logiciel.
 
 2. Licence d'utilisation :
    a. Le Créateur Initial accorde à l'Utilisateur une licence non exclusive et non transférable pour utiliser le Logiciel conformément aux termes et conditions énoncés dans le présent contrat.
-   b. Le Logiciel ne peut être vendu, loué ou distribué à des fins commerciales sans l'autorisation écrite préalable de Daniel Falkov.
+   b. Le Logiciel ne peut être vendu, loué ou distribué à des fins commerciales sans l'autorisation écrite préalable du Créateur Initial.
    c. Le logo Saint Jean & La Croix et les nominations associées appartiennent au lycée Saint Jean et La Croix de Saint Quentin, font donc l'objet de restrictions suplémentaires:
         - Sans autorisation dudit organisme, aucune copie commerciale ne peut être distribuée incluant les ressources du logiciel appartennant audit organisme.
 
 3. Attribution :
-   a. L'Utilisateur reconnaît et accepte que le Logiciel, y compris toute modification apportée, doit toujours inclure une citation claire et visible de Daniel Falkov, indiquant sa contribution au Logiciel.
+   a. L'Utilisateur reconnaît et accepte que le Logiciel, y compris toute modification apportée, doit toujours inclure une citation claire et visible du Créateur Initial, indiquant sa contribution au Logiciel.
 
 4. Responsabilité :
-   a. L'utilisation du Logiciel se fait aux risques et périls de l'Utilisateur. Ni Daniel Falkov ni ses concédants de licence ne seront tenus responsables de tout dommage direct, indirect, accessoire, spécial, exemplaire ou consécutif découlant de l'utilisation ou de l'incapacité d'utilisation du Logiciel.
+   a. L'utilisation du Logiciel se fait aux risques et périls de l'Utilisateur. Ni le Créateur Initial ni ses concédants de licence ne seront tenus responsables de tout dommage direct, indirect, accessoire, spécial, exemplaire ou consécutif découlant de l'utilisation ou de l'incapacité d'utilisation du Logiciel.
 
 5. Utilisation Honnête :
    a. L'Utilisateur s'engage à n'utiliser le Logiciel qu'à des fins légales et éthiques. Le Logiciel ne doit en aucun cas être utilisé à des fins malveillantes, illégales ou nuisibles.
@@ -27,8 +27,9 @@ ATTENTION : VEUILLEZ LIRE ATTENTIVEMENT CE CONTRAT DE LICENCE AVANT D'UTILISER C
    a. Daniel Falkov et ses concédants se réservent le droit de résilier cette licence à tout moment en cas de violation des termes énoncés dans ce contrat. En cas de résiliation, l'Utilisateur doit cesser immédiatement toute utilisation du Logiciel et détruire toutes les copies en sa possession.
 
 7. Dispositions Générales :
-   a. Ce contrat constitue l'intégralité de l'accord entre Daniel Falkov et l'Utilisateur concernant l'utilisation du Logiciel et remplace tous les accords antérieurs ou contemporains, qu'ils soient écrits ou verbaux.
-   b. Ce contrat est régi et interprété conformément aux lois en vigueur. Tout litige découlant de ce contrat sera soumis à la compétence exclusive du système juridique français.
-   c. Pour toute question ou préoccupation concernant ce contrat, veuillez contacter Daniel Falkov à l'adresse e-mail suivante : danfaldev@gmail.com.
+   a. Ce contrat constitue l'intégralité de l'accord entre le Créateur Initial et l'Utilisateur concernant l'utilisation du Logiciel et remplace tous les accords antérieurs ou contemporains, qu'ils soient écrits ou verbaux.
+   b. Pour toute question ou préoccupation concernant ce contrat, veuillez contacter le Créateur Initial à l'adresse e-mail suivante : danfaldev@gmail.com.
 
 EN UTILISANT CE LOGICIEL, VOUS RECONNAISSEZ AVOIR LU ET COMPRIS LES TERMES DE CETTE LICENCE ET ACCEPTEZ D'ÊTRE LIÉ PAR SES CONDITIONS. SI VOUS N'ACCEPTEZ PAS CES TERMES, VEUILLEZ NE PAS UTILISER CE LOGICIEL.
+
+Rédigé à Saint-Quentin le 05/05/2024.
