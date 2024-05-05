@@ -86,16 +86,16 @@ const CreateNewQuiz = () => {
                             <span>Réponse: {question.possibleAnswers[parseInt(question.validAnswer)]}</span>
                         </div>) : (
                         <form className="new-question" onSubmit={(e) => handleQuestionEdit(e, i)} key={i}>
-                            <label htmlFor="question">Question:</label>
+                            <label htmlFor="question">Question</label>
                             <input type="text" name="question" placeholder="Ecrire une question..." defaultValue={question.question} maxLength={100} required />
                             <fieldset>
-                                <legend>Réponses possibles (2 minimum):</legend>
+                                <legend>Réponses possibles (2 minimum)</legend>
                                 <input type="text" name="answer-a" placeholder="Réponse A" defaultValue={question.possibleAnswers[0]} maxLength={80} required />
                                 <input type="text" name="answer-b" placeholder="Réponse B" defaultValue={question.possibleAnswers[1]} maxLength={80} required />
                                 <input type="text" name="answer-c" placeholder="Réponse C" defaultValue={question.possibleAnswers[2]} maxLength={80} />
                                 <input type="text" name="answer-d" placeholder="Réponse D" defaultValue={question.possibleAnswers[3]} maxLength={80} />
                             </fieldset>
-                            <label htmlFor="valid-answer">Bonne réponse:</label>
+                            <label htmlFor="valid-answer">Bonne réponse</label>
                             <select name="valid-answer" id="valid-answer" defaultValue={question.validAnswer} required>
                                 <option value="0">Réponse A</option>
                                 <option value="1">Réponse B</option>
@@ -109,16 +109,16 @@ const CreateNewQuiz = () => {
                 })}
                 {createNewQuestion ? (
                     <form className="new-question" onSubmit={(e) => handleNewQuestionSubmit(e)}>
-                        <label htmlFor="question">Question:</label>
+                        <label htmlFor="question">Question</label>
                         <input type="text" name="question" placeholder="Ecrire une question..." maxLength={100} required />
                         <fieldset>
-                            <legend>Réponses possibles (2 minimum):</legend>
+                            <legend>Réponses possibles (2 minimum)</legend>
                             <input type="text" name="answer-a" placeholder="Réponse A" maxLength={80} required />
                             <input type="text" name="answer-b" placeholder="Réponse B" maxLength={80} required />
                             <input type="text" name="answer-c" placeholder="Réponse C" maxLength={80} />
                             <input type="text" name="answer-d" placeholder="Réponse D" maxLength={80} />
                         </fieldset>
-                        <label htmlFor="valid-answer">Bonne réponse:</label>
+                        <label htmlFor="valid-answer">Bonne réponse</label>
                         <select name="valid-answer" id="valid-answer" required>
                             <option value="0">Réponse A</option>
                             <option value="1">Réponse B</option>
