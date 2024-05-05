@@ -46,6 +46,7 @@
       height: 350px;
       overflow-y: scroll;
       @include mixins.BasicComponentScrollbar;
+      padding-bottom: 10px;
 
       .users-rules-list {
 
@@ -76,18 +77,17 @@
             box-shadow: 2px 2px 3px gray;
             padding: 0.1rem 0.3rem;
             cursor: pointer;
-            overflow-x: scroll;
             width: 140px;
 
             @media screen and (min-width:600px) {
               width: 200px;
             }
 
-            @include mixins.BasicComponentScrollbar;
           }
 
           .hidden {
-            background: black;
+            -webkit-text-security: disc;
+    text-security: disc;
           }
 
           img {

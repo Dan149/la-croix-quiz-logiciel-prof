@@ -105,7 +105,7 @@ const VoteLikeDisplay = () => {
                             </span>{" "}
                           </div>
                         </div>
-                        <h5 id={showValidAnswer ? "" : `n${index}`}>
+                        <h5 id={showValidAnswer ? questionsData[currentQuestionId].validAnswer == index ? "valid" : "invalid" : `n${index}`}>
                           {
                             questionsData[currentQuestionId].possibleAnswers[
                             index
@@ -141,6 +141,7 @@ const VoteLikeDisplay = () => {
         setShowValidAnswer(false);
         fetchUsersData();
         fetchQuestionsData();
+        fetchVotesData();
         setFetchingUsersDataInterval();
       }}
     >
