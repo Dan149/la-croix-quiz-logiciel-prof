@@ -42,20 +42,38 @@
       @include mixins.BasicQuestionsViewerStyle;
 
       .question-item {
-        .remove-btn {
+        .actions {
           position: absolute;
           top: 8px;
-          transition: 500ms ease;
           right: 8px;
-          width: 2rem;
-          border: 1px solid black;
-          border-radius: 1000px;
-          padding: 2px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
 
-          &:hover,
-          &:focus {
+          img {
+            transition: 500ms ease;
+            width: 2rem;
+            border: 1px solid black;
+            border-radius: 1000px;
+            padding: 2px;
+            cursor: pointer;
+          }
+
+          .remove-btn:hover,
+          .remove-btn:focus {
             transform: rotate(-360deg);
             background: rgb(255, 180, 180);
+          }
+
+          .edit-btn {
+            background: ghostwhite;
+
+            &:hover,
+            &:focus {
+              transform: rotate(360deg);
+              background: rgb(180, 180, 255);
+            }
           }
         }
       }

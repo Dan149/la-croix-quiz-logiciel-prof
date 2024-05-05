@@ -595,7 +595,7 @@ async function createWindow() {
     }
   });
 
-  ipcMain.on("import-json-quiz-file", () => {
+  ipcMain.on("import-json-quiz-file", (_event, setGlobalQuizFile: boolean = true) => {
     if (!isDialogWithFileOpen) {
       isDialogWithFileOpen = true;
       dialog
@@ -605,10 +605,10 @@ async function createWindow() {
         })
         .then((res: any) => {
           if (res.filePaths.length === 1) {
-            globalQuizFilePath = res.filePaths[0];
+            if (setGlobalQuizFile) globalQuizFilePath = res.filePaths[0];
             const fs = require("node:fs");
             fs.readFile(
-              globalQuizFilePath,
+              res.filePaths[0],
               "utf8",
               (err: any, data: string) => {
                 if (err) {
@@ -616,15 +616,17 @@ async function createWindow() {
                     createNewNotification("Erreur lors de l'import.", err)
                   );
                 } else {
-                  quizJSONConfig = data;
-                  parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
-                  webContents.send("receive-json-quiz-file", quizJSONConfig);
-                  sendNotification(
-                    createNewNotification(
-                      "Quiz importé !",
-                      `Quiz importé du fichier ${globalQuizFilePath}.`
-                    )
-                  );
+                  if (setGlobalQuizFile) {
+                    quizJSONConfig = data;
+                    parsedQuizJSONConfig = JSON.parse(quizJSONConfig);
+                    sendNotification(
+                      createNewNotification(
+                        "Quiz importé !",
+                        `Quiz importé du fichier ${globalQuizFilePath}.`
+                      )
+                    );
+                  }
+                  webContents.send("receive-json-quiz-file", data);
                 }
               }
             );

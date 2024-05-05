@@ -24,11 +24,12 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.on("receive-session-type", callback);
   },
   //
-  exportQuizJSON: (JSONString: string) => {
+  exportQuizJSON: (JSONString: string, callback: any) => {
     ipcRenderer.send("export-quiz-JSON", JSONString);
+    ipcRenderer.on("receive-global-quiz-file-path", callback)
   },
-  importQuizJSON: (callback: any) => {
-    ipcRenderer.send("import-json-quiz-file");
+  importQuizJSON: (callback: any, setGlobalQuizFile?: boolean) => {
+    ipcRenderer.send("import-json-quiz-file", setGlobalQuizFile);
     ipcRenderer.on("receive-json-quiz-file", callback);
   },
   //
