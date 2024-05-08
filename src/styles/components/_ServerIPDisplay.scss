@@ -42,6 +42,10 @@
     }
 
     .interface-and-ip {
+      @media screen and (min-width: 850px) {
+        transform: scale(1.1);
+      }
+
       display: grid;
       grid-template-columns: 40% 60%;
       border-radius: 5px;

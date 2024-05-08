@@ -74,7 +74,7 @@ const UsersRulesCreator = () => { // front page for creating CSV files with user
                                 {usePasswords ?
                                     <span className="password hidden" title="Afficher le mot de passe" onClick={(e: any) => e.target.classList.toggle("hidden")}>{userRule.password}</span> : ""
                                 }
-                                <img src="./img/remove.svg" onClick={() => removeUserRule(index)} />
+                                <img src="./img/remove.svg" onClick={() => removeUserRule(index)} draggable="false" />
                             </li>
                         ))
                     }
