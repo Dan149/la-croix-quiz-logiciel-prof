@@ -62,7 +62,7 @@ const VoteLikeDisplay = (props: any) => {
         ) : (
           ""
         )}
-        {currentQuestionId < votesData.length ? (
+        {currentQuestionId + 1 < votesData.length ? (
           <span
             className="arrow-right arrow"
             onClick={() => {
@@ -75,7 +75,7 @@ const VoteLikeDisplay = (props: any) => {
         )}
         {questionsData.length !== 0 || props.isPlainVoteQuiz ? (
           <div className="question-votes-view">
-            <h3>{props.isPlainVoteQuiz ? `Vote N°${votesData.length}` : questionsData[currentQuestionId].question}</h3>
+            <h3>{props.isPlainVoteQuiz ? votesData.length == 0 ? "" : `Vote N°${currentQuestionId + 1}` : questionsData[currentQuestionId].question}</h3>
 
             <div className="question-votes-container">
               {votesData.length !== 0
@@ -117,7 +117,11 @@ const VoteLikeDisplay = (props: any) => {
                       ""
                     )
                 )
-                : "Chargement..."}
+                : "Pas de votes..."}
+              {props.isPlainVoteQuiz && (currentQuestionId == votesData.length - 1 || votesData.length == 0) ? <button className="btn" onClick={() => {
+                window.api.addNewPlainVote();
+                fetchVotesData();
+              }}>Ajouter un vote</button> : ""}
             </div>
             {props.isPlainVoteQuiz ? "" : <button
               className="btn"
@@ -139,6 +143,7 @@ const VoteLikeDisplay = (props: any) => {
       onClick={async () => {
         setShowUsersData(true);
         setShowValidAnswer(false);
+
         fetchUsersData();
         if (!props.isPlainVoteQuiz) {
           fetchQuestionsData();

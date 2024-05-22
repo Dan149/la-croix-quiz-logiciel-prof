@@ -22,7 +22,8 @@ const ImportQuiz = () => {
     }, [])
 
     const handleFileUse = () => {
-        if (globalQuizFilePath !== "" || startPlainVoteQuiz) {
+        if (globalQuizFilePath !== "") {
+            window.api.setIsPlainVoteQuiz(false)
             setStartQuizSession(true)
         }
     }
@@ -39,10 +40,11 @@ const ImportQuiz = () => {
                         })
                     }}>Ouvrir un fichier</button>
                     <button onClick={() => {
-                        window.api.startPlainVoteQuiz()
-                        setStartPlainVoteQuiz(true)
+                        window.api.setIsPlainVoteQuiz(true);
+                        setStartPlainVoteQuiz(true);
+                        setStartQuizSession(true);
                     }
-                    }>Démarrer des votes numérotées</button>
+                    }>Démarrer un vote numéroté</button>
                     {globalQuizFilePath == "" ? "" : <button onClick={() => handleFileUse()}>Utiliser ce fichier</button>}
                     <div className="file-selection">
                         {globalQuizFilePath === "" ? "" : <div className="filepath">{globalQuizFilePath}</div>}

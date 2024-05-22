@@ -32,8 +32,12 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("import-json-quiz-file", setGlobalQuizFile);
     ipcRenderer.on("receive-json-quiz-file", callback);
   },
-  startPlainVoteQuiz: () => {
-    ipcRenderer.send("start-plain-vote-quiz");
+  // PlainVoteQuiz:
+  setIsPlainVoteQuiz: (isPlainVoteQuiz: boolean) => {
+    ipcRenderer.send("set-is-plain-vote-quiz", isPlainVoteQuiz);
+  },
+  addNewPlainVote: () => {
+    ipcRenderer.send("add-new-plain-vote");
   },
   //
   getGlobalQuizFilePath: (callback: any) => {

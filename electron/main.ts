@@ -223,7 +223,7 @@ const registrerNewQuestionVote = (questionId: any, voteId: any) => {
   votesData[questionId][voteId]++;
 };
 
-const nextPlainVote = () => {
+const addNewPlainVote = () => {
   votesData.push([0, 0, 0, 0])
 }
 
@@ -713,10 +713,10 @@ async function createWindow() {
     webContents.send("receive-votes-data", votesData);
   });
   // Plain votes handling:
-  ipcMain.on("start-plain-vote-quiz", () => {
-    startPlainVoteQuiz = true
+  ipcMain.on("set-is-plain-vote-quiz", (_event: any, isPlainVoteQuiz: boolean) => {
+    startPlainVoteQuiz = isPlainVoteQuiz
   })
-  ipcMain.on("next-plain-vote", nextPlainVote)
+  ipcMain.on("add-new-plain-vote", () => addNewPlainVote())
   // Notification handling:
 
   ipcMain.on("add-new-notification-to-pool", (_event: any, params: any) => {
