@@ -32,6 +32,9 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.send("import-json-quiz-file", setGlobalQuizFile);
     ipcRenderer.on("receive-json-quiz-file", callback);
   },
+  startPlainVoteQuiz: () => {
+    ipcRenderer.send("start-plain-vote-quiz");
+  },
   //
   getGlobalQuizFilePath: (callback: any) => {
     ipcRenderer.send("get-global-quiz-file-path");

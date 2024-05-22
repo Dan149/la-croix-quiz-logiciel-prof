@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-const VoteLikeDisplay = () => {
+const VoteLikeDisplay = (props: any) => {
   const useEffectInitialized = useRef(false);
   const [showUsersData, setShowUsersData] = useState(false);
   const [usersData, setUsersData] = useState([]);
@@ -62,7 +62,7 @@ const VoteLikeDisplay = () => {
         ) : (
           ""
         )}
-        {currentQuestionId <= questionsData.length - 2 ? (
+        {currentQuestionId < votesData.length ? (
           <span
             className="arrow-right arrow"
             onClick={() => {
@@ -73,21 +73,21 @@ const VoteLikeDisplay = () => {
         ) : (
           ""
         )}
-        {questionsData.length !== 0 ? (
+        {questionsData.length !== 0 || props.isPlainVoteQuiz ? (
           <div className="question-votes-view">
-            <h3>{questionsData[currentQuestionId].question}</h3>
+            <h3>{props.isPlainVoteQuiz ? `Vote N°${votesData.length}` : questionsData[currentQuestionId].question}</h3>
 
             <div className="question-votes-container">
               {votesData.length !== 0
                 ? votesData[currentQuestionId].map(
                   (votes: number, index: number) =>
-                    questionsData[currentQuestionId].possibleAnswers.length >
-                      index ? (
+                    props.isPlainVoteQuiz ? true : (questionsData[currentQuestionId].possibleAnswers.length >
+                      index) ? (
                       <div className="votes-card" key={index}>
                         <div className="amount-holder">
                           <div
                             className="amount"
-                            id={
+                            id={props.isPlainVoteQuiz ? "" :
                               showValidAnswer
                                 ? questionsData[currentQuestionId]
                                   .validAnswer == index
@@ -105,8 +105,8 @@ const VoteLikeDisplay = () => {
                             </span>{" "}
                           </div>
                         </div>
-                        <h5 id={showValidAnswer ? questionsData[currentQuestionId].validAnswer == index ? "valid" : "invalid" : `n${index}`}>
-                          {
+                        <h5 id={props.isPlainVoteQuiz ? "" : showValidAnswer ? questionsData[currentQuestionId].validAnswer == index ? "valid" : "invalid" : `n${index}`}>
+                          {props.isPlainVoteQuiz ? `choix ${index + 1}` :
                             questionsData[currentQuestionId].possibleAnswers[
                             index
                             ]
@@ -119,14 +119,14 @@ const VoteLikeDisplay = () => {
                 )
                 : "Chargement..."}
             </div>
-            <button
+            {props.isPlainVoteQuiz ? "" : <button
               className="btn"
               onClick={() => setShowValidAnswer(!showValidAnswer)}
             >
               {showValidAnswer
                 ? "Masquer la bonne réponse"
                 : "Afficher la bonne réponse"}
-            </button>
+            </button>}
           </div>
         ) : (
           "Chargement..."
@@ -140,7 +140,9 @@ const VoteLikeDisplay = () => {
         setShowUsersData(true);
         setShowValidAnswer(false);
         fetchUsersData();
-        fetchQuestionsData();
+        if (!props.isPlainVoteQuiz) {
+          fetchQuestionsData();
+        }
         fetchVotesData();
         setFetchingUsersDataInterval();
       }}

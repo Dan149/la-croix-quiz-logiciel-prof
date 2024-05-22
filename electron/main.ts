@@ -40,6 +40,7 @@ let sessionType: string = ""; // Used to render the import/create quiz on front 
 let globalQuizFilePath: string = ""; // Path of the imported quiz file conf.
 let quizJSONConfig: string = ""; // JSON string of the previous file.
 let parsedQuizJSONConfig: any = {}; // Object of the previous JSON var.
+let startPlainVoteQuiz: boolean = false // starts a quiz without any set questions or answers.
 let QuizAPIServerPort: number = 3333; // Port on which the server runs.
 let winWebContents: any = null; // webContents to use outside the window declaration, when it is already set.
 let isDialogWithFileOpen: boolean = false; // Bool to avoid opening multiple file managers in the same time.
@@ -187,7 +188,7 @@ APIServer.use(
 
 const usersData: UserData[] = [];
 const votesData: any = []; // items: votes array (for each question)
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
+
 const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 
 const authClientIPAddress = (clientIP: string, sessionId: string) => {
@@ -211,14 +212,20 @@ const authClientIPAddress = (clientIP: string, sessionId: string) => {
 
 const initVotesData = () => {
   votesData.length = 0;
-  parsedQuizJSONConfig.forEach(() => {
-    votesData.push([0, 0, 0, 0]);
-  });
+  if (!startPlainVoteQuiz) {
+    parsedQuizJSONConfig.forEach(() => {
+      votesData.push([0, 0, 0, 0]);
+    });
+  }
 };
 
 const registrerNewQuestionVote = (questionId: any, voteId: any) => {
   votesData[questionId][voteId]++;
 };
+
+const nextPlainVote = () => {
+  votesData.push([0, 0, 0, 0])
+}
 
 const startQuizAPIServer = () => {
   sessionTime = Date.now();
@@ -236,36 +243,49 @@ const startQuizAPIServer = () => {
   });
   APIServer.post("/get-question", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
-      try {
-        if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
-          const question = parsedQuizJSONConfig[req.body.questionId];
-          res.json({
-            question: question.question,
-            possibleAnswers: question.possibleAnswers,
-          });
-        } else {
-          usersData[req.body.userId].hasFinished = true;
-          res.send("end");
+      if (!startPlainVoteQuiz) {
+        try {
+          if (req.body.questionId <= parsedQuizJSONConfig.length - 1) {
+            const question = parsedQuizJSONConfig[req.body.questionId];
+            res.json({
+              question: question.question,
+              possibleAnswers: question.possibleAnswers,
+            });
+          } else {
+            usersData[req.body.userId].hasFinished = true;
+            res.send("end");
+          }
+        } catch {
+          res.send("error");
         }
-      } catch {
-        res.send("error");
+      } else {
+        if (req.body.questionId < votesData.length) { // is next vote available or not
+          res.send("pv-ready")
+        } else {
+          res.send("pv-wait")
+        }
       }
     }
   });
 
   APIServer.post("/register-user-answer-validity", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
-      try {
-        usersData[req.body.userId].answersValidity[req.body.questionId] =
-          parsedQuizJSONConfig[req.body.questionId].validAnswer ==
-          req.body.chosenAnswerIndex; // boolean
-        registrerNewQuestionVote(
-          req.body.questionId,
-          req.body.chosenAnswerIndex
-        );
-        res.send("ok");
-      } catch (err) {
-        res.send("error");
+      if (!startPlainVoteQuiz) {
+        try {
+          usersData[req.body.userId].answersValidity[req.body.questionId] =
+            parsedQuizJSONConfig[req.body.questionId].validAnswer ==
+            req.body.chosenAnswerIndex; // boolean
+          registrerNewQuestionVote(
+            req.body.questionId,
+            req.body.chosenAnswerIndex
+          );
+          res.send("ok");
+        } catch (err) {
+          res.send("error");
+        }
+      } else {
+        usersData[req.body.userId].answersValidity[req.body.questionId] = true
+        registrerNewQuestionVote(req.body.questionId, req.body.chosenAnswerIndex)
       }
     }
   });
@@ -635,7 +655,6 @@ async function createWindow() {
         });
     }
   });
-
   ipcMain.on("get-global-quiz-file-path", () => {
     webContents.send("receive-global-quiz-file-path", globalQuizFilePath);
   });
@@ -693,6 +712,11 @@ async function createWindow() {
   ipcMain.on("get-votes-data", () => {
     webContents.send("receive-votes-data", votesData);
   });
+  // Plain votes handling:
+  ipcMain.on("start-plain-vote-quiz", () => {
+    startPlainVoteQuiz = true
+  })
+  ipcMain.on("next-plain-vote", nextPlainVote)
   // Notification handling:
 
   ipcMain.on("add-new-notification-to-pool", (_event: any, params: any) => {

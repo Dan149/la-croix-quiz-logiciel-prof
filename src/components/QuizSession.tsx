@@ -44,7 +44,10 @@ const QuizSession = (props: any) => { // filepath
     <div className="quiz-session-container">
       {isAPIServerOn ? "" : <BackButton />}
       {isAPIServerOn ? <h2>Session en cours...</h2> : <h2>Démarrer la session ?</h2>}
-      <h5 className="filepath">Chemin d'accès du fichier de configuration du quiz: {props.globalQuizFilePath}</h5>
+      {props.isPlainVoteQuiz ?
+        <h5 className="filepath">Quiz à votes numérotés.</h5>
+        :
+        <h5 className="filepath">Chemin d'accès du fichier de configuration du quiz: {props.globalQuizFilePath}</h5>}
       {quizAPIServerEvents.length > 0 ? <div className="quiz-api-server-logs">
         {quizAPIServerEvents.map((event, index) => {
           return <div className={`event-type-${event["type"]} event`} key={index}>
@@ -60,7 +63,7 @@ const QuizSession = (props: any) => { // filepath
         <div className="quiz-actions-flex">
           {isQuizStartAllowed ? <>
             <UserDataDisplay />
-            <VoteLikeDisplay />
+            <VoteLikeDisplay isPlainVoteQuiz={props.isPlainVoteQuiz} />
           </> : ""}
           {isAPIServerOn ? <>
             <ServerIPDisplay />
