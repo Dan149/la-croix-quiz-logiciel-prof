@@ -241,6 +241,9 @@ const startQuizAPIServer = () => {
   APIServer.get("/session-time", (_req: any, res: any) => {
     res.json(sessionTime);
   });
+  APIServer.get("/is-plain-vote-quiz", (_req: any, res: any) => {
+    res.send(startPlainVoteQuiz);
+  });
   APIServer.post("/get-question", (req: any, res: any) => {
     if (authClientIPAddress(req.socket.remoteAddress, req.session.id)) {
       if (!startPlainVoteQuiz) {
@@ -260,9 +263,9 @@ const startQuizAPIServer = () => {
         }
       } else {
         if (req.body.questionId < votesData.length) { // is next vote available or not
-          res.send("pv-ready")
+          res.send("ready")
         } else {
-          res.send("pv-wait")
+          res.send("wait")
         }
       }
     }
