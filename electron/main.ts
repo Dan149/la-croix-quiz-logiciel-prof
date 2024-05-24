@@ -283,12 +283,17 @@ const startQuizAPIServer = () => {
             req.body.chosenAnswerIndex
           );
           res.send("ok");
-        } catch (err) {
+        } catch {
           res.send("error");
         }
       } else {
-        usersData[req.body.userId].answersValidity[req.body.questionId] = true
-        registrerNewQuestionVote(req.body.questionId, req.body.chosenAnswerIndex)
+        try {
+          usersData[req.body.userId].answersValidity[req.body.questionId] = true
+          registrerNewQuestionVote(req.body.questionId, req.body.chosenAnswerIndex)
+          res.send("ok");
+        } catch {
+          res.send("error");
+        }
       }
     }
   });
@@ -471,7 +476,7 @@ const exportUsersDataToCSV = () => {
       nom: user.nom,
       prenom: user.prenom,
       note: `${validOnes}/${user.answersValidity.length}`,
-      status: user.hasFinished ? "Quiz fini" : "Quiz incomplet",
+      status: startPlainVoteQuiz ? "vote numéroté" : user.hasFinished ? "Quiz fini" : "Quiz incomplet",
     });
   });
 

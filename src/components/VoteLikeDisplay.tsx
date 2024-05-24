@@ -78,11 +78,11 @@ const VoteLikeDisplay = (props: any) => {
             <h3>{props.isPlainVoteQuiz ? votesData.length == 0 ? "" : `Vote N°${currentQuestionId + 1}` : questionsData[currentQuestionId].question}</h3>
 
             <div className="question-votes-container">
-              {votesData.length !== 0
+              {votesData.length != 0
                 ? votesData[currentQuestionId].map(
                   (votes: number, index: number) =>
-                    props.isPlainVoteQuiz ? true : (questionsData[currentQuestionId].possibleAnswers.length >
-                      index) ? (
+                    (props.isPlainVoteQuiz ? true : (questionsData[currentQuestionId].possibleAnswers.length >
+                      index)) ? (
                       <div className="votes-card" key={index}>
                         <div className="amount-holder">
                           <div
@@ -118,12 +118,11 @@ const VoteLikeDisplay = (props: any) => {
                     )
                 )
                 : "Pas de votes..."}
-              {props.isPlainVoteQuiz && (currentQuestionId == votesData.length - 1 || votesData.length == 0) ? <button className="btn" onClick={() => {
-                window.api.addNewPlainVote();
-                fetchVotesData();
-              }}>Ajouter un vote</button> : ""}
             </div>
-            {props.isPlainVoteQuiz ? "" : <button
+            {props.isPlainVoteQuiz ? ((currentQuestionId == votesData.length - 1 || votesData.length == 0) ? <button className="btn" onClick={() => {
+              window.api.addNewPlainVote();
+              fetchVotesData();
+            }}>Ajouter un vote</button> : "") : <button
               className="btn"
               onClick={() => setShowValidAnswer(!showValidAnswer)}
             >
