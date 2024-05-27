@@ -77,9 +77,6 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.on("receive-votes-data", callback);
   },
   // Notifications:
-  addNewNotificationToPool: (notificationParams: any) => {
-    ipcRenderer.send("add-new-notification-to-pool", notificationParams);
-  },
   listenToNewNotifications: (callback: any) => {
     ipcRenderer.on("receive-notification", callback);
   },

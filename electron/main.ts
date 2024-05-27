@@ -725,11 +725,6 @@ async function createWindow() {
     startPlainVoteQuiz = isPlainVoteQuiz
   })
   ipcMain.on("add-new-plain-vote", () => addNewPlainVote())
-  // Notification handling:
-
-  ipcMain.on("add-new-notification-to-pool", (_event: any, params: any) => {
-    sendNotification(createNewNotification(params.title, params.message));
-  });
 
   // Settings handling:
 
