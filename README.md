@@ -2,7 +2,7 @@
 
 ## Logiciel de création de quiz scolaire
 
-> Créé par Daniel Falkov dans le cadre d'un projet scolaire au lycée Saint Jean & La Croix à Saint Quentin, Aisne.
+> Créé dans le cadre d'un projet scolaire pour le lycée Saint Jean et La Croix de Saint Quentin 
 
 ---
 
